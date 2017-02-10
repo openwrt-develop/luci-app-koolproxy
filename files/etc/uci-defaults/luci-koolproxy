@@ -1,0 +1,11 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@koolproxy[-1]
+	add ucitrack koolproxy
+	set ucitrack.@koolproxy[-1].init=koolproxy
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0

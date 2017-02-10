@@ -1,0 +1,99 @@
+#!/bin/sh
+# set -x
+# 初始化变量
+APPNAME="koolproxy"
+SERVERURL=http://rules.ngrok.wang:5000
+
+TEMPPATH="/tmp/$APPNAME"
+LOGFILE="/var/log/$APPNAME.log"
+
+Reduce_Log(){
+	local log=$1
+	[ ! -f "$log" ] && return
+	local sc=100
+	[ -n "$2" ] && sc=$2
+	local count=$(grep -c "" $log)
+	if [ $count -gt $sc ];then
+		let count=count-$sc
+		sed -i "1,$count d" $log
+	fi
+}
+
+InitEnv()
+{
+	rm -rf "$TEMPPATH"
+	mkdir -p "$TEMPPATH"
+}
+
+RestartApp()
+{
+	/etc/init.d/koolproxy restart
+}
+
+CompareFile()
+{
+	local descript=$1
+	local localPath=$2
+	local remoteUrl=$3
+	local remoteDate=$4
+	
+	echo $(date): ------------------- $descript更新 ------------------- >>$LOGFILE
+	local filename=`basename $localPath`
+	local remotePath="$TEMPPATH/$filename"
+	wget -qT1 "$remoteUrl" -O "$remotePath"
+	if [ "$?" == "0" ]; then
+		if [ -f "$localPath" ]; then
+			localMD5=`md5sum "$localPath" | awk '{print $1}'`
+			localNum=`cat "$localPath" | grep -v '^!' | wc -l`
+		else
+			localMD5="文件不存在"
+			localNum="0"
+		fi
+		remoteMD5=`md5sum "$remotePath" | awk '{print $1}'`
+		remoteNum=`cat "$remotePath" | grep -v '^!' | wc -l`
+		
+		echo $(date): 本地版本MD5：$localMD5 >>$LOGFILE
+		echo $(date): 本地版本条数：$localNum >>$LOGFILE
+		echo >>$LOGFILE
+		echo $(date): 在线版本日期：$remoteDate >>$LOGFILE
+		echo $(date): 在线版本MD5：$remoteMD5 >>$LOGFILE
+		echo $(date): 在线版本条数：$remoteNum >>$LOGFILE
+		echo >>$LOGFILE
+		
+		if [ "$localMD5" != "$remoteMD5" ];then
+			echo $(date): 检测到更新，开始更新静态规则！ >>$LOGFILE
+			mv -f "$remotePath" "$localPath"
+			echo $(date): 更新成功！ >>$LOGFILE
+			echo >>$LOGFILE
+			return 0
+		fi
+	else
+		echo "$(date): 获取在线版本时出现错误! " >>$LOGFILE
+	fi
+	return 1
+}
+
+# 程序主体
+InitEnv
+Reduce_Log $LOGFILE
+version="$TEMPPATH/version"
+wget -qT1 "$SERVERURL/version" -O "$version"
+if [ "$?" == "0" ]; then
+	CompareFile "静态规则" "/usr/share/koolproxy/data/koolproxy.txt" "$SERVERURL/koolproxy.txt" "$(cat "$version" | awk 'NR==2{print}')"
+	r1=$?
+	CompareFile "视频规则" "/usr/share/koolproxy/data/1.dat" "$SERVERURL/1.dat" "$(cat "$version" | awk 'NR==4{print}')"
+	r2=$?
+	echo $(date): ---------------------------------------------------- >>$LOGFILE
+	if [ $r1 -eq 0 ] || [ $r2 -eq 0 ]; then
+		echo $(date): 正在自动重启使更新内容生效，请稍后！ >>$LOGFILE
+		RestartApp
+		echo $(date): 重启成功！ >>$LOGFILE
+	else
+		echo $(date): 本地已经是最新版本，无需更新！ >>$LOGFILE
+	fi
+	echo >>$LOGFILE
+else
+	echo $(date): 获取在线版本时出现错误，请检查你的网络环境！ >>$LOGFILE
+fi
+/usr/sbin/adblockplus >>$LOGFILE 2>&1 &
+InitEnv

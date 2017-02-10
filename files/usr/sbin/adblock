@@ -1,0 +1,8 @@
+#!/bin/sh
+cat /etc/gfwlist/adblock | sed "s/,/\n/g" | sed "s/^/ipset=&\/./g" | sed "s/$/\/adblock/g"  >> /tmp/adblock.conf
+mv /tmp/adblock.conf /etc/dnsmasq.d/adblock.conf
+rm -f /tmp/adblock.conf
+rm -f /tmp/dnsmasq.d/adblock.conf
+ln -s /etc/dnsmasq.d/adblock.conf /tmp/dnsmasq.d/adblock.conf
+ipset -F adblock
+/etc/init.d/dnsmasq restart

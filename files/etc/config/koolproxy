@@ -1,0 +1,5 @@
+config global
+	option filter_mode 'global'
+	option time_update '4'
+	option enabled '0'
+	

@@ -1,0 +1,4 @@
+#!/bin/sh
+# koolproxy integration for firewall3
+
+/etc/init.d/koolproxy reload
