@@ -41,7 +41,7 @@ CompareFile()
 	echo $(date): ------------------- $descript更新 ------------------- >>$LOGFILE
 	local filename=`basename $localPath`
 	local remotePath="$TEMPPATH/$filename"
-	wget -qT1 --no-check-certificate "$remoteUrl" -O "$remotePath"
+	wget -qT5 --no-check-certificate "$remoteUrl" -O "$remotePath"
 	if [ "$?" == "0" ]; then
 		if [ -f "$localPath" ]; then
 			localMD5=`md5sum "$localPath" | awk '{print $1}'`
@@ -78,7 +78,7 @@ CompareFile()
 InitEnv
 Reduce_Log $LOGFILE
 version="$TEMPPATH/version"
-wget -qT1 --no-check-certificate "$SERVERURL/version" -O "$version"
+wget -qT5 --no-check-certificate "$SERVERURL/version" -O "$version"
 if [ "$?" == "0" ]; then
 	CompareFile "静态规则" "/usr/share/koolproxy/data/koolproxy.txt" "$SERVERURL/koolproxy.txt" "$(cat "$version" | awk 'NR==2{print}')"
 	r1=$?
