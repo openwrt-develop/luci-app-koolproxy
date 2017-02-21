@@ -2,7 +2,8 @@
 # set -x
 # 初始化变量
 APPNAME="koolproxy"
-SERVERURL=http://rules.ngrok.wang:5000
+#SERVERURL=http://rules.ngrok.wang:5000
+SERVERURL=https://rules.ngrok.wang
 
 TEMPPATH="/tmp/$APPNAME"
 LOGFILE="/var/log/$APPNAME.log"

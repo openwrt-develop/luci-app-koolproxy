@@ -1,3 +1,4 @@
+wget -O- 'https://rules.ngrok.wang/version' > files/usr/share/koolproxy/data/version
 wget -O- 'https://rules.ngrok.wang/koolproxy.txt' > files/usr/share/koolproxy/data/koolproxy.txt
 wget -O- 'https://rules.ngrok.wang/1.dat' > files/usr/share/koolproxy/data/1.dat 
 wget -O- 'http://firmware.koolshare.cn/binary/KoolProxy/arm' > files/bin/arm

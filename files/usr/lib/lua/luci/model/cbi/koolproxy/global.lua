@@ -11,7 +11,7 @@ local o,t,e
 local s=luci.sys.exec("head -1 /usr/share/koolproxy/data/koolproxy.txt  | awk -F' ' '{print $3,$4}'")
 local u=luci.sys.exec("head -2 /usr/share/koolproxy/data/koolproxy.txt |sed -n 2p| awk -F' ' '{print $3,$4}'")
 local l=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/koolproxy.txt | wc -l")
-local i=luci.sys.exec("cat /etc/dnsmasq.d/dnsmasq.adblock | wc -l")
+local i=luci.sys.exec("cat /usr/share/koolproxy/dnsmasq.adblock | wc -l")
 local h=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/user.txt | wc -l")
 o=Map(r,translate("koolproxy"),translate("A powerful advertisement blocker. <br /><font color=\"red\">Adblock Plus Host list + koolproxy Blacklist mode runs without loss of bandwidth due to performance issues.<br /></font>"))
 o.template="koolproxy/index"
@@ -43,7 +43,7 @@ e.default=0
 e:depends("filter_mode","adblock")
 e=t:taboption("base",ListValue,"time_update",translate("Timing update rules"))
 for t=0,23 do
-e:value(t,translate("每天"..t.."点"))
+	e:value(t,translate("每天"..t.."点"))
 end
 e.default=0
 e.rmempty=false
@@ -51,8 +51,8 @@ restart=t:taboption("base",Button,"restart",translate("Manually update the koolp
 restart.inputtitle=translate("Update manually")
 restart.inputstyle="reload"
 restart.write=function()
-luci.sys.call("/usr/share/koolproxy/koolproxyupdate")
-luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
+	luci.sys.call("/usr/share/koolproxy/koolproxyupdate")
+	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
 e=t:taboption("base",DummyValue,"status1",translate("</label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div>"))
 e=t:taboption("base",DummyValue,"status2",translate("</label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div>"))
@@ -64,15 +64,15 @@ e.template="koolproxy/caupload"
 e=t:taboption("cert",DummyValue,"",nil)
 e.template="koolproxy/cadvalue"
 if nixio.fs.access("/usr/share/koolproxy/data/certs/ca.crt")then
-e=t:taboption("cert",DummyValue,"c2status",translate("<div align=\"left\">Certificate Backup</div>"))
-e=t:taboption("cert",Button,"certificate")
-e.inputtitle=translate("Backup Download")
-e.inputstyle="reload"
-e.write=function()
-luci.sys.call("/usr/share/koolproxy/camanagement backup")
-Download()
-luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
-end
+	e=t:taboption("cert",DummyValue,"c2status",translate("<div align=\"left\">Certificate Backup</div>"))
+	e=t:taboption("cert",Button,"certificate")
+	e.inputtitle=translate("Backup Download")
+	e.inputstyle="reload"
+	e.write=function()
+		luci.sys.call("/usr/share/koolproxy/camanagement backup")
+		Download()
+		luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
+	end
 end
 local i="/etc/gfwlist/adblock"
 e=t:taboption("weblist",TextValue,"configfile")
@@ -80,15 +80,15 @@ e.description=translate("These had been joined websites will use filter,but only
 e.rows=28
 e.wrap="off"
 e.cfgvalue=function(t,t)
-return a.readfile(i)or""
+	return a.readfile(i)or""
 end
 e.write=function(t,t,e)
-a.writefile("/tmp/adblock",e:gsub("\r\n","\n"))
-if(luci.sys.call("cmp -s /tmp/adblock /etc/gfwlist/adblock")==1)then
-a.writefile(i,e:gsub("\r\n","\n"))
-luci.sys.call("/usr/sbin/adblock >/dev/null")
-end
-a.remove("/tmp/adblock")
+	a.writefile("/tmp/adblock",e:gsub("\r\n","\n"))
+	if(luci.sys.call("cmp -s /tmp/adblock /etc/gfwlist/adblock")==1)then
+		a.writefile(i,e:gsub("\r\n","\n"))
+		luci.sys.call("/usr/sbin/adblock >/dev/null")
+	end
+	a.remove("/tmp/adblock")
 end
 local i="/etc/gfwlist/adblockip"
 e=t:taboption("iplist",TextValue,"adconfigfile")
@@ -96,10 +96,10 @@ e.description=translate("These had been joined ip addresses will use proxy,but o
 e.rows=28
 e.wrap="off"
 e.cfgvalue=function(t,t)
-return a.readfile(i)or""
+	return a.readfile(i)or""
 end
 e.write=function(t,t,e)
-a.writefile(i,e:gsub("\r\n","\n"))
+	a.writefile(i,e:gsub("\r\n","\n"))
 end
 local i="/usr/share/koolproxy/data/user.txt"
 e=t:taboption("customlist",TextValue,"configfile1")
@@ -107,10 +107,10 @@ e.description=translate("Enter your custom rules, each row.")
 e.rows=28
 e.wrap="off"
 e.cfgvalue=function(t,t)
-return a.readfile(i)or""
+	return a.readfile(i)or""
 end
 e.write=function(t,t,e)
-a.writefile(i,e:gsub("\r\n","\n"))
+	a.writefile(i,e:gsub("\r\n","\n"))
 end
 local i="/var/log/koolproxy.log"
 e=t:taboption("logs",TextValue,"configfile2")
@@ -118,7 +118,7 @@ e.description=translate("Koolproxy Logs")
 e.rows=28
 e.wrap="off"
 e.cfgvalue=function(t,t)
-return a.readfile(i)or""
+	return a.readfile(i)or""
 end
 e.write=function(e,e,e)
 end
@@ -135,13 +135,13 @@ e=t:option(Value,"ipaddr",translate("IP Address"))
 e.width="20%"
 e.datatype="ip4addr"
 n.net.arptable(function(t)
-e:value(t["IP address"])
+	e:value(t["IP address"])
 end)
 e=t:option(Value,"mac",translate("MAC Address"))
 e.width="20%"
 e.rmempty=true
 n.net.mac_hints(function(t,a)
-e:value(t,"%s (%s)"%{t,a})
+	e:value(t,"%s (%s)"%{t,a})
 end)
 e=t:option(ListValue,"filter_mode",translate("Filter Mode"))
 e.width="20%"
@@ -152,42 +152,77 @@ e:value("global",translate("Global Filter"))
 e:value("adblock",translate("AdBlock Filter"))
 e:value("ghttps",translate("Global Https Filter"))
 e:value("ahttps",translate("AdBlock Https Filter"))
+
+t=o:section(TypedSection,"rss_rule",translate("RSS Rules"),
+translate("1. Koolproxy support to subcribe external rules, please make sure the rule is supported by koolproxy\n2. Please make sure the Nick Name is different"))
+t.template="cbi/tblsection"
+t.sortable=true
+t.anonymous=true
+t.addremove=true
+e=t:option(Value,"name",translate("Nick Name"))
+e.width="10%"
+e.rmempty=false
+function e.validate(self, value)
+	if not value then
+		return nil
+	else
+		return value
+	end
+end
+e=t:option(Value,"url",translate("EXT Rule"))
+e.width="55%"
+e.rmempty=false
+e.placeholder="[https|http|ftp]://[Hostname]/[File]"
+function e.validate(self, value)
+	if not value then
+		return nil
+	else
+		return value
+	end
+end
+e=t:option(DummyValue,"time",translate("Update Time"))
+e.width="15%"
+e=t:option(Flag,"load",translate("Enable"))
+e.width="10%"
+e.default=0
+e.rmempty=false
+
 function Download()
-local t,e
-t=nixio.open("/tmp/upload/koolproxyca.tar.gz","r")
-luci.http.header('Content-Disposition','attachment; filename="koolproxyCA.tar.gz"')
-luci.http.prepare_content("application/octet-stream")
-while true do
-e=t:read(nixio.const.buffersize)
-if(not e)or(#e==0)then
-break
-else
-luci.http.write(e)
-end
-end
-t:close()
-luci.http.close()
+	local t,e
+	t=nixio.open("/tmp/upload/koolproxyca.tar.gz","r")
+	luci.http.header('Content-Disposition','attachment; filename="koolproxyCA.tar.gz"')
+	luci.http.prepare_content("application/octet-stream")
+	while true do
+		e=t:read(nixio.const.buffersize)
+		if(not e)or(#e==0)then
+			break
+		else
+			luci.http.write(e)
+		end
+	end
+	t:close()
+	luci.http.close()
 end
 local t,e
 t="/tmp/upload/"
 nixio.fs.mkdir(t)
 d.setfilehandler(
 function(o,a,i)
-if not e then
-if not o then return end
-e=nixio.open(t..o.file,"w")
-if not e then
-return
-end
-end
-if a and e then
-e:write(a)
-end
-if i and e then
-e:close()
-e=nil
-luci.sys.call("/usr/share/koolproxy/camanagement restore")
-end
+	if not e then
+		if not o then return end
+		e=nixio.open(t..o.file,"w")
+		if not e then
+			return
+		end
+	end
+	if a and e then
+		e:write(a)
+	end
+	if i and e then
+		e:close()
+		e=nil
+		luci.sys.call("/usr/share/koolproxy/camanagement restore")
+	end
 end
 )
 return o

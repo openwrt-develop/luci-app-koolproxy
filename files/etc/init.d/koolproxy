@@ -11,6 +11,8 @@ START=99
 STOP=15
 
 CONFIG=koolproxy
+PROG_PATH=/usr/share/koolproxy
+DATA_PATH=$PROG_PATH/data
 
 config_n_get() {
 	local ret=$(uci get $CONFIG.$1.$2 2>/dev/null)
@@ -30,6 +32,24 @@ if [ -z "$1" ] || [ -z "$2" ]; then
 	else
 		echo "$2 $1"
 fi
+}
+
+load_exrule(){
+	local nick
+	local exrule
+	local enable
+	config_get nick $1 name
+	config_get exrule $1 url
+	config_get enable $1 load
+	if [ -n "$nick" ] && [ -n "$exrule" ]; then
+		if [ $enable -ne 1 ]; then
+			rm -rf $DATA_PATH/$nick.txt
+			return
+		fi
+		wget-ssl -O- $exrule --quiet --timeout=5 --no-check-certificate >> $DATA_PATH/$nick.txt
+		uci set koolproxy.$1.time="`date -u`"
+		uci commit koolproxy
+	fi
 }
 
 load_acl(){
@@ -63,10 +83,10 @@ load_config() {
 add_dnsmasq() {
 adblockenable=$(config_t_get global adblock 0)
 if [ ! -f "/tmp/dnsmasq.d/dnsmasq.adblock" -a "$adblockenable" == "1" ];then
-    ln -s /etc/dnsmasq.d/dnsmasq.adblock /tmp/dnsmasq.d/dnsmasq.adblock
+    ln -s /usr/share/koolproxy/dnsmasq.adblock /tmp/dnsmasq.d/dnsmasq.adblock
 fi
 if [ ! -f "/tmp/dnsmasq.d/adblock.conf" ];then
-	ln -s /etc/dnsmasq.d/adblock.conf /tmp/dnsmasq.d/adblock.conf
+	ln -s /usr/share/koolproxy/adblock.conf /tmp/dnsmasq.d/adblock.conf
 	/etc/init.d/dnsmasq restart
 fi
 }
@@ -184,6 +204,8 @@ start() {
 	! load_config && exit 0
 	iptables -t nat -C PREROUTING -p tcp -j KOOLPROXY 2>/dev/null && [ $? -eq 0 ] && exit 0;
 	gen_ca
+	#加载RULES
+	config_foreach load_exrule rss_rule
 	/usr/share/koolproxy/koolproxy -d >/dev/null 2>&1 &
 	add_rule
 	add_koolproxy_cru
