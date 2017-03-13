@@ -19,3 +19,13 @@ config rss_rule
 	option name '静态规则'
 	option url 'https://rules.ngrok.wang/koolproxy.txt'
 	option load '0'
+
+config rss_rule
+	option name '新视频规则'
+	option url 'http://entware.mirrors.ligux.com/koolproxy/1.dat'
+	option load '1'
+
+config rss_rule
+	option name '新静态规则'
+	option url 'http://entware.mirrors.ligux.com/koolproxy/koolproxy.txt'
+	option load '1'
