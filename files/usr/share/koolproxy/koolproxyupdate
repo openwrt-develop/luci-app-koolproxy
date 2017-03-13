@@ -1,12 +1,21 @@
 #!/bin/sh
 # set -x
+
+. /lib/functions.sh
+
 # 初始化变量
 APPNAME="koolproxy"
-#SERVERURL=http://rules.ngrok.wang:5000
-SERVERURL=https://rules.ngrok.wang
 
+CONFIG=koolproxy
 TEMPPATH="/tmp/$APPNAME"
 LOGFILE="/var/log/$APPNAME.log"
+
+config_t_get() {
+	local index=0
+	[ -n "$4" ] && index=$4
+	local ret=$(uci get $CONFIG.@$1[$index].$2 2>/dev/null)
+	echo ${ret:=$3}
+}
 
 Reduce_Log(){
 	local log=$1
@@ -41,7 +50,7 @@ CompareFile()
 	echo $(date): ------------------- $descript更新 ------------------- >>$LOGFILE
 	local filename=`basename $localPath`
 	local remotePath="$TEMPPATH/$filename"
-	wget -qT5 --no-check-certificate "$remoteUrl" -O "$remotePath"
+	wget-ssl -qT5 --no-check-certificate "$remoteUrl" -O "$remotePath"
 	if [ "$?" == "0" ]; then
 		if [ -f "$localPath" ]; then
 			localMD5=`md5sum "$localPath" | awk '{print $1}'`
@@ -74,27 +83,63 @@ CompareFile()
 	return 1
 }
 
+update_exrule(){
+	local nick
+	local exrule
+	local enable
+	config_get nick $1 name
+	config_get exrule $1 url
+	config_get enable $1 load
+	if [ -n "$nick" ] && [ -n "$exrule" ]; then
+		if [ $enable -ne 1 ]; then
+			return
+		fi
+		wget-ssl -O- $exrule --quiet --timeout=5 --no-check-certificate >> $DATA_PATH/$nick.txt
+		echo $(date): ---------------------------------------------------- >>$LOGFILE
+		if [ "$?" == "0" ]; then
+			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
+			uci commit koolproxy
+			echo $(date): 更新成功！ $nick: $exrule >>$LOGFILE
+		else
+			echo $(date): 更新失败！ $nick: $exrule >>$LOGFILE
+		fi
+		echo >>$LOGFILE
+	fi
+}
+
+Update_RSSRule(){
+	config_load $CONFIG
+	config_foreach update_exrule rss_rule
+}
+
+Update_Host()
+{
+	/usr/sbin/adblockplus >>$LOGFILE 2>&1 &
+}
+
 # 程序主体
 InitEnv
 Reduce_Log $LOGFILE
-version="$TEMPPATH/version"
-wget -qT5 --no-check-certificate "$SERVERURL/version" -O "$version"
-if [ "$?" == "0" ]; then
-	CompareFile "静态规则" "/usr/share/koolproxy/data/koolproxy.txt" "$SERVERURL/koolproxy.txt" "$(cat "$version" | awk 'NR==2{print}')"
-	r1=$?
-	CompareFile "视频规则" "/usr/share/koolproxy/data/1.dat" "$SERVERURL/1.dat" "$(cat "$version" | awk 'NR==4{print}')"
-	r2=$?
-	echo $(date): ---------------------------------------------------- >>$LOGFILE
-	if [ $r1 -eq 0 ] || [ $r2 -eq 0 ]; then
-		echo $(date): 正在自动重启使更新内容生效，请稍后！ >>$LOGFILE
-		RestartApp
-		echo $(date): 重启成功！ >>$LOGFILE
-	else
-		echo $(date): 本地已经是最新版本，无需更新！ >>$LOGFILE
-	fi
-	echo >>$LOGFILE
-else
-	echo $(date): 获取在线版本时出现错误，请检查你的网络环境！ >>$LOGFILE
-fi
-/usr/sbin/adblockplus >>$LOGFILE 2>&1 &
+#version="$TEMPPATH/version"
+#wget-ssl -qT5 --no-check-certificate "$SERVERURL/version" -O "$version"
+#if [ "$?" == "0" ]; then
+#	CompareFile "静态规则" "/usr/share/koolproxy/data/koolproxy.txt" "$SERVERURL/koolproxy.txt" "$(cat "$version" | awk 'NR==2{print}')"
+#	r1=$?
+#	CompareFile "视频规则" "/usr/share/koolproxy/data/1.dat" "$SERVERURL/1.dat" "$(cat "$version" | awk 'NR==4{print}')"
+#	r2=$?
+#	echo $(date): ---------------------------------------------------- >>$LOGFILE
+#	if [ $r1 -eq 0 ] || [ $r2 -eq 0 ]; then
+#		echo $(date): 正在自动重启使更新内容生效，请稍后！ >>$LOGFILE
+#		RestartApp
+#		echo $(date): 重启成功！ >>$LOGFILE
+#	else
+#		echo $(date): 本地已经是最新版本，无需更新！ >>$LOGFILE
+#	fi
+#	echo >>$LOGFILE
+#else
+#	echo $(date): 获取在线版本时出现错误，请检查你的网络环境！ >>$LOGFILE
+#fi
+Update_RSSRule
+Update_Host
+RestartApp
 InitEnv

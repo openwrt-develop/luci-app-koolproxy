@@ -62,9 +62,9 @@ define Package/luci-app-koolproxy/install
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/i18n/koolproxy.zh-cn.lmo $(1)/usr/lib/lua/luci/i18n/koolproxy.zh-cn.lmo
 	$(INSTALL_BIN) ./files/usr/sbin/* $(1)/usr/sbin/
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/certs/* $(1)/usr/share/koolproxy/data/certs
-	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/1.dat $(1)/usr/share/koolproxy/data/
+	#$(INSTALL_DATA) ./files/usr/share/koolproxy/data/1.dat $(1)/usr/share/koolproxy/data/
 	$(INSTALL_BIN) ./files/usr/share/koolproxy/data/gen_ca.sh $(1)/usr/share/koolproxy/data/
-	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/koolproxy.txt $(1)/usr/share/koolproxy/data/
+	#$(INSTALL_DATA) ./files/usr/share/koolproxy/data/koolproxy.txt $(1)/usr/share/koolproxy/data/
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/openssl.cnf $(1)/usr/share/koolproxy/data/
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/user.txt $(1)/usr/share/koolproxy/data/
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/version $(1)/usr/share/koolproxy/data/

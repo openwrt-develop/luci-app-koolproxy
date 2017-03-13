@@ -1,5 +1,21 @@
+
 config global
 	option filter_mode 'global'
 	option time_update '4'
 	option enabled '0'
-	
+	option startup_delay '0'
+
+config rss_rule
+	option name 'adbyby'
+	option url 'https://raw.githubusercontent.com/dsyo2008/lazy_for_koolproxy/master/lazy_kp.txt'
+	option load '0'
+
+config rss_rule
+	option name '视频规则'
+	option url 'https://rules.ngrok.wang/1.dat'
+	option load '0'
+
+config rss_rule
+	option name '静态规则'
+	option url 'https://rules.ngrok.wang/koolproxy.txt'
+	option load '0'

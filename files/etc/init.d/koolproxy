@@ -46,9 +46,11 @@ load_exrule(){
 			rm -rf $DATA_PATH/$nick.txt
 			return
 		fi
-		wget-ssl -O- $exrule --quiet --timeout=5 --no-check-certificate >> $DATA_PATH/$nick.txt
-		uci set koolproxy.$1.time="`date -u`"
-		uci commit koolproxy
+		if [ ! -f $DATA_PATH/$nick.txt ]; then
+			wget-ssl -O- $exrule --quiet --timeout=5 --no-check-certificate >> $DATA_PATH/$nick.txt
+			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
+			uci commit koolproxy
+		fi
 	fi
 }
 
@@ -200,6 +202,24 @@ del_rule() {
 	iptables -t nat -F KOOLPROXY_HTTPS_GLO 2>/dev/null && iptables -t nat -X KOOLPROXY_HTTPS_GLO 2>/dev/null
 }
 
+export_ipt_rules() {
+	FWI=$(uci get firewall.koolproxy.path 2>/dev/null)
+	[ -n "$FWI" ] || return 0
+	cat <<-CAT >>$FWI
+	iptables-restore -n <<-EOF
+	$(iptables-save | grep -E "KOOLPROXY|^\*|^COMMIT" |\
+			sed -e "s/^-A \(PREROUTING\)/-I \1 1/")
+	EOF
+CAT
+	return $?
+}
+
+flush_ipt_rules() {
+	FWI=$(uci get firewall.koolproxy.path 2>/dev/null)
+	[ -n "$FWI" ] && echo '# firewall include file' >$FWI
+	return 0
+}
+
 start() {
 	! load_config && exit 0
 	iptables -t nat -C PREROUTING -p tcp -j KOOLPROXY 2>/dev/null && [ $? -eq 0 ] && exit 0;
@@ -209,9 +229,25 @@ start() {
 	/usr/share/koolproxy/koolproxy -d >/dev/null 2>&1 &
 	add_rule
 	add_koolproxy_cru
+	flush_ipt_rules && export_ipt_rules
+}
+
+delay_start() {
+	(sleep $1 && start >/dev/null 2>&1) &
+}
+
+boot() {
+	local delay=$(config_t_get global startup_delay 0)
+	if [ "$delay" -gt 0 ]; then
+		delay_start $delay
+	else
+		start
+	fi
+	return 0
 }
 
 stop() {
+	flush_ipt_rules
 	del_rule
 	ipset -F adblock
 	ipset -X adblock

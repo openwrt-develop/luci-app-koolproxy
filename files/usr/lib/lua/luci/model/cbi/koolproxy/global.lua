@@ -8,9 +8,9 @@ local e
 local e="1.7"
 local r="koolproxy"
 local o,t,e
-local s=luci.sys.exec("head -1 /usr/share/koolproxy/data/koolproxy.txt  | awk -F' ' '{print $3,$4}'")
-local u=luci.sys.exec("head -2 /usr/share/koolproxy/data/koolproxy.txt |sed -n 2p| awk -F' ' '{print $3,$4}'")
-local l=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/koolproxy.txt | wc -l")
+--local s=luci.sys.exec("head -1 /usr/share/koolproxy/data/koolproxy.txt  | awk -F' ' '{print $3,$4}'")
+--local u=luci.sys.exec("head -2 /usr/share/koolproxy/data/koolproxy.txt |sed -n 2p| awk -F' ' '{print $3,$4}'")
+--local l=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/koolproxy.txt | wc -l")
 local i=luci.sys.exec("cat /usr/share/koolproxy/dnsmasq.adblock | wc -l")
 local h=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/user.txt | wc -l")
 o=Map(r,translate("koolproxy"),translate("A powerful advertisement blocker. <br /><font color=\"red\">Adblock Plus Host list + koolproxy Blacklist mode runs without loss of bandwidth due to performance issues.<br /></font>"))
@@ -32,6 +32,14 @@ t:tab("logs",translate("View the logs"))
 e=t:taboption("base",Flag,"enabled",translate("Enable"))
 e.default=0
 e.rmempty=false
+e=t:taboption("base",Value, "startup_delay", translate("Startup Delay"))
+e:value(0, translate("Not enabled"))
+for _, v in ipairs({5, 10, 15, 25, 40}) do
+	e:value(v, translate("%u seconds") %{v})
+end
+e.datatype = "uinteger"
+e.default = 0
+e.rmempty = false
 e=t:taboption("base",ListValue,"filter_mode",translate('Default')..translate("Filter Mode"))
 e.default="adblock"
 e.rmempty=false
@@ -54,8 +62,8 @@ restart.write=function()
 	luci.sys.call("/usr/share/koolproxy/koolproxyupdate")
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
-e=t:taboption("base",DummyValue,"status1",translate("</label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div>"))
-e=t:taboption("base",DummyValue,"status2",translate("</label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div>"))
+--e=t:taboption("base",DummyValue,"status1",translate("</label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div>"))
+--e=t:taboption("base",DummyValue,"status2",translate("</label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div>"))
 e=t:taboption("base",DummyValue,"status3",translate("</label><div align=\"left\">自定规则<strong>【<font color=\"#660099\">"..h.."</font>】</strong></div>"))
 e=t:taboption("base",DummyValue,"status4",translate("</label><div align=\"left\">Host规则<strong>【<font color=\"#660099\">"..i.."</font>】</strong></div>"))
 e=t:taboption("cert",DummyValue,"c1status",translate("<div align=\"left\">Certificate Restore</div>"))
@@ -154,7 +162,7 @@ e:value("ghttps",translate("Global Https Filter"))
 e:value("ahttps",translate("AdBlock Https Filter"))
 
 t=o:section(TypedSection,"rss_rule",translate("RSS Rules"),
-translate("1. Koolproxy support to subcribe external rules, please make sure the rule is supported by koolproxy\n2. Please make sure the Nick Name is different"))
+translate("请确保第三方规则兼容Koolproxy, 并保证Nick Name不要相同"))
 t.template="cbi/tblsection"
 t.sortable=true
 t.anonymous=true
