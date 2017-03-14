@@ -46,7 +46,7 @@ CompareFile()
 	local localPath=$2
 	local remoteUrl=$3
 	local remoteDate=$4
-	
+
 	echo $(date): ------------------- $descript更新 ------------------- >>$LOGFILE
 	local filename=`basename $localPath`
 	local remotePath="$TEMPPATH/$filename"
@@ -61,7 +61,7 @@ CompareFile()
 		fi
 		remoteMD5=`md5sum "$remotePath" | awk '{print $1}'`
 		remoteNum=`cat "$remotePath" | grep -v '^!' | wc -l`
-		
+
 		echo $(date): 本地版本MD5：$localMD5 >>$LOGFILE
 		echo $(date): 本地版本条数：$localNum >>$LOGFILE
 		echo >>$LOGFILE
@@ -69,7 +69,7 @@ CompareFile()
 		echo $(date): 在线版本MD5：$remoteMD5 >>$LOGFILE
 		echo $(date): 在线版本条数：$remoteNum >>$LOGFILE
 		echo >>$LOGFILE
-		
+
 		if [ "$localMD5" != "$remoteMD5" ];then
 			echo $(date): 检测到更新，开始更新静态规则！ >>$LOGFILE
 			mv -f "$remotePath" "$localPath"
@@ -79,6 +79,7 @@ CompareFile()
 		fi
 	else
 		echo "$(date): 获取在线版本时出现错误! " >>$LOGFILE
+		echo >>$LOGFILE
 	fi
 	return 1
 }
@@ -94,7 +95,7 @@ update_exrule(){
 		if [ $enable -ne 1 ]; then
 			return
 		fi
-		wget-ssl -O- $exrule --quiet --timeout=5 --no-check-certificate >> $DATA_PATH/$nick.txt
+		wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATA_PATH/$nick.txt
 		echo $(date): ---------------------------------------------------- >>$LOGFILE
 		if [ "$?" == "0" ]; then
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
@@ -115,6 +116,56 @@ Update_RSSRule(){
 Update_Host()
 {
 	/usr/sbin/adblockplus >>$LOGFILE 2>&1 &
+	echo >>$LOGFILE
+}
+
+Update_APP()
+{
+	for a in $(opkg print-architecture | awk '{print $2}'); do
+		case "$a" in
+			all|noarch)
+				;;
+			aarch64_armv8-a|arm_arm1176jzf-s_vfp|arm_arm926ej-s|arm_cortex-a15_neon-vfpv4|arm_cortex-a5|arm_cortex-a53_neon-vfpv4|arm_cortex-a7_neon-vfpv4|arm_cortex-a8_vfpv3|arm_cortex-a9|arm_cortex-a9_neon|arm_cortex-a9_vfpv3|arm_fa526|arm_mpcore|arm_mpcore_vfp|arm_xscale|armeb_xscale)
+				ARCH="arm"
+				;;
+			i386_pentium|i386_pentium4)
+				ARCH="i386"
+				;;
+			mips_24kc|mips_mips32|mips64_octeon)
+				ARCH="mips"
+				;;
+			mipsel_24kc|mipsel_74kc|mipsel_mips32)
+				ARCH="mipsel"
+				;;
+			powerpc_464fp|powerpc_8540)
+				ARCH="powerpc"
+				;;
+			x86_64)
+				ARCH="x86_64"
+				;;
+			*)
+				echo "Architectures not support."
+				exit 0
+				;;
+		esac
+	done
+
+	echo -e "\nTarget Arch:\033[32m $ARCH \033[0m\n"
+
+	wget --quiet --timeout=5 "http://firmware.koolshare.cn/binary/KoolProxy/$ARCH" -O $TEMPPATH/koolproxy
+	chmod +x $TEMPPATH/koolproxy
+
+	old_version=`/usr/share/koolproxy/koolproxy -v`
+	new_version=`$TEMPPATH/koolproxy -v`
+
+	echo $(date): ---------------------------------------------------- >>$LOGFILE
+	if [ "$old_version" != "$new_version" ]; then
+		mv $TEMPPATH/koolproxy /usr/share/koolproxy/koolproxy
+		echo $(date): koolproxy $new_version 更新成功！ >>$LOGFILE
+	else
+		echo $(date): koolproxy $old_version 本地已经是最新版本，无需更新！ >>$LOGFILE
+	fi
+	echo >>$LOGFILE
 }
 
 # 程序主体
@@ -139,6 +190,7 @@ Reduce_Log $LOGFILE
 #else
 #	echo $(date): 获取在线版本时出现错误，请检查你的网络环境！ >>$LOGFILE
 #fi
+Update_APP
 Update_RSSRule
 Update_Host
 RestartApp

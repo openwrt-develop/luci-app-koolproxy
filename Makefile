@@ -40,7 +40,7 @@ endef
 define Package/luci-app-koolproxy/install
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DIR) $(1)/etc/gfwlist
+	$(INSTALL_DIR) $(1)/etc/adblocklist
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/controller
@@ -55,7 +55,7 @@ define Package/luci-app-koolproxy/install
 	$(INSTALL_BIN) ./files/etc/uci-defaults/luci-koolproxy $(1)/etc/uci-defaults/luci-app-koolproxy
 	$(INSTALL_BIN) ./files/etc/init.d/* $(1)/etc/init.d/
 	$(INSTALL_DATA) ./files/etc/config/* $(1)/etc/config/
-	$(INSTALL_DATA) ./files/etc/gfwlist/* $(1)/etc/gfwlist/
+	$(INSTALL_DATA) ./files/etc/adblocklist/* $(1)/etc/adblocklist/
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/model/cbi/koolproxy/global.lua $(1)/usr/lib/lua/luci/model/cbi/koolproxy/global.lua
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/controller/koolproxy.lua $(1)/usr/lib/lua/luci/controller/koolproxy.lua
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/view/koolproxy/* $(1)/usr/lib/lua/luci/view/koolproxy/

@@ -47,7 +47,7 @@ load_exrule(){
 			return
 		fi
 		if [ ! -f $DATA_PATH/$nick.txt ]; then
-			wget-ssl -O- $exrule --quiet --timeout=5 --no-check-certificate >> $DATA_PATH/$nick.txt
+			wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATA_PATH/$nick.txt
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
 			uci commit koolproxy
 		fi
@@ -170,7 +170,7 @@ add_rule() {
 	#创建所需的ipset
 	IPSET_ADB="adblock"
 	ipset -! create $IPSET_ADB nethash && ipset -! add $IPSET_ADB 110.110.110.110 2>/dev/null
-	sed -e "s/^/add $IPSET_ADB &/g" /etc/gfwlist/adblockip | awk '{print $0} END{print "COMMIT"}' | ipset -R 2>/dev/null
+	sed -e "s/^/add $IPSET_ADB &/g" /etc/adblocklist/adblockip | awk '{print $0} END{print "COMMIT"}' | ipset -R 2>/dev/null
 	#生成代理规则
 	#  忽略特殊IP段
 	iptables_ext A KOOLPROXY "-d 0.0.0.0/8 -j RETURN"
