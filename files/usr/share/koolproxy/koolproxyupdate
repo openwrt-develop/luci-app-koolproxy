@@ -150,7 +150,7 @@ Update_APP()
 		esac
 	done
 
-	echo -e "\nTarget Arch:\033[32m $ARCH \033[0m\n"
+	#echo Target Arch: $ARCH >>$LOGFILE
 
 	wget --quiet --timeout=5 "http://firmware.koolshare.cn/binary/KoolProxy/$ARCH" -O $TEMPPATH/koolproxy
 	chmod +x $TEMPPATH/koolproxy
@@ -163,6 +163,7 @@ Update_APP()
 		mv $TEMPPATH/koolproxy /usr/share/koolproxy/koolproxy
 		echo $(date): koolproxy $new_version 更新成功！ >>$LOGFILE
 	else
+		rm -f $TEMPPATH/koolproxy
 		echo $(date): koolproxy $old_version 本地已经是最新版本，无需更新！ >>$LOGFILE
 	fi
 	echo >>$LOGFILE
