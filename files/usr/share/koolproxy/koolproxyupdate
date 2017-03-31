@@ -85,17 +85,17 @@ CompareFile()
 }
 
 update_exrule(){
-	local nick
+	local file
 	local exrule
 	local enable
-	config_get nick $1 name
+	config_get file $1 file
 	config_get exrule $1 url
 	config_get enable $1 load
-	if [ -n "$nick" ] && [ -n "$exrule" ]; then
+	if [ -n "$file" ] && [ -n "$exrule" ]; then
 		if [ $enable -ne 1 ]; then
 			return
 		fi
-		wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATA_PATH/$nick.txt
+		wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATA_PATH/$file
 		echo $(date): ---------------------------------------------------- >>$LOGFILE
 		if [ "$?" == "0" ]; then
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
@@ -191,8 +191,15 @@ Reduce_Log $LOGFILE
 #else
 #	echo $(date): 获取在线版本时出现错误，请检查你的网络环境！ >>$LOGFILE
 #fi
-Update_APP
-Update_RSSRule
-Update_Host
+if [ "$1" == "rules" ]; then
+	Update_RSSRule
+	Update_Host
+elif [ "$1" == "binary" ]; then
+	Update_APP
+else
+	Update_APP
+	Update_RSSRule
+	Update_Host
+fi
 RestartApp
 InitEnv

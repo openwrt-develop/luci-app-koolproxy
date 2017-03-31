@@ -8,9 +8,10 @@ local e
 local e="1.7"
 local r="koolproxy"
 local o,t,e
---local s=luci.sys.exec("head -1 /usr/share/koolproxy/data/koolproxy.txt  | awk -F' ' '{print $3,$4}'")
---local u=luci.sys.exec("head -2 /usr/share/koolproxy/data/koolproxy.txt |sed -n 2p| awk -F' ' '{print $3,$4}'")
---local l=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/koolproxy.txt | wc -l")
+local v=luci.sys.exec("/usr/share/koolproxy/koolproxy -v")
+local s=luci.sys.exec("head -3 /usr/share/koolproxy/data/koolproxy.txt | grep rules | awk -F' ' '{print $3,$4}'")
+local u=luci.sys.exec("head -4 /usr/share/koolproxy/data/koolproxy.txt | grep video | awk -F' ' '{print $3,$4}'")
+local l=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/koolproxy.txt | wc -l")
 local i=luci.sys.exec("cat /usr/share/koolproxy/dnsmasq.adblock | wc -l")
 local h=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/user.txt | wc -l")
 o=Map(r,translate("koolproxy"),translate("A powerful advertisement blocker. <br /><font color=\"red\">Adblock Plus Host list + koolproxy Blacklist mode runs without loss of bandwidth due to performance issues.<br /></font>"))
@@ -59,13 +60,27 @@ restart=t:taboption("base",Button,"restart",translate("Manually update the koolp
 restart.inputtitle=translate("Update manually")
 restart.inputstyle="reload"
 restart.write=function()
-	luci.sys.call("/usr/share/koolproxy/koolproxyupdate")
+	luci.sys.call("/usr/share/koolproxy/koolproxyupdate rules")
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
+update=t:taboption("base",Button,"update",translate("主程序更新"))
+update.inputtitle=translate("Update manually")
+update.inputstyle="reload"
+update.description = translate(string.format("主程序版本：%s", v))
+o.inputstyle = "reload"
+update.write=function()
+	luci.sys.call("/usr/share/koolproxy/koolproxyupdate binary")
+	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
+end
+
 --e=t:taboption("base",DummyValue,"status1",translate("<label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div></label>"))
 --e=t:taboption("base",DummyValue,"status2",translate("<label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div></label>"))
-e=t:taboption("base",DummyValue,"status3",translate("<label><div align=\"left\">自定规则<strong>【<font color=\"#660099\">"..h.."</font>】</strong></div></label>"))
-e=t:taboption("base",DummyValue,"status4",translate("<label><div align=\"left\">Host规则<strong>【<font color=\"#660099\">"..i.."</font>】</strong></div></label>"))
+--e=t:taboption("base",DummyValue,"status3",translate("<label><div align=\"left\">自定规则<strong>【<font color=\"#660099\">"..h.."</font>】</strong></div></label>"))
+--e=t:taboption("base",DummyValue,"status4",translate("<label><div align=\"left\">Host规则<strong>【<font color=\"#660099\">"..i.."</font>】</strong></div></label>"))
+e=t:taboption("base",DummyValue,"status1",translate("</label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div>"))
+e=t:taboption("base",DummyValue,"status2",translate("</label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div>"))
+e=t:taboption("base",DummyValue,"status3",translate("</label><div align=\"left\">自定规则<strong>【<font color=\"#660099\">"..h.."</font>】</strong></div>"))
+e=t:taboption("base",DummyValue,"status4",translate("</label><div align=\"left\">Host规则<strong>【<font color=\"#660099\">"..i.."</font>】</strong></div>"))
 e=t:taboption("cert",DummyValue,"c1status",translate("<div align=\"left\">Certificate Restore</div>"))
 e=t:taboption("cert",FileUpload,"")
 e.template="koolproxy/caupload"
@@ -162,7 +177,7 @@ e:value("ghttps",translate("Global Https Filter"))
 e:value("ahttps",translate("AdBlock Https Filter"))
 
 t=o:section(TypedSection,"rss_rule",translate("RSS Rules"),
-translate("请确保第三方规则兼容Koolproxy, 并保证Nick Name不要相同"))
+translate("请确保第三方规则兼容Koolproxy"))
 t.template="cbi/tblsection"
 t.sortable=true
 t.anonymous=true
@@ -170,13 +185,6 @@ t.addremove=true
 e=t:option(Value,"name",translate("Nick Name"))
 e.width="10%"
 e.rmempty=false
-function e.validate(self, value)
-	if not value then
-		return nil
-	else
-		return value
-	end
-end
 e=t:option(Value,"url",translate("EXT Rule"))
 e.width="55%"
 e.rmempty=false
