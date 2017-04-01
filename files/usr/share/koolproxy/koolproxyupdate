@@ -8,6 +8,7 @@ APPNAME="koolproxy"
 
 CONFIG=koolproxy
 TEMPPATH="/tmp/$APPNAME"
+DATAPATH=/usr/share/koolproxy/data
 LOGFILE="/var/log/$APPNAME.log"
 
 config_t_get() {
@@ -95,7 +96,7 @@ update_exrule(){
 		if [ $enable -ne 1 ]; then
 			return
 		fi
-		wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATA_PATH/$file
+		wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATAPATH/$file
 		echo $(date): ---------------------------------------------------- >>$LOGFILE
 		if [ "$?" == "0" ]; then
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
