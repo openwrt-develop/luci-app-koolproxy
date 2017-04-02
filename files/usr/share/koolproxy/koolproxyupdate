@@ -8,7 +8,7 @@ APPNAME="koolproxy"
 
 CONFIG=koolproxy
 TEMPPATH="/tmp/$APPNAME"
-DATAPATH=/usr/share/koolproxy/data
+DATAPATH="/usr/share/koolproxy/data"
 LOGFILE="/var/log/$APPNAME.log"
 
 config_t_get() {

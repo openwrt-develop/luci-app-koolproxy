@@ -14,13 +14,21 @@ local u=luci.sys.exec("head -4 /usr/share/koolproxy/data/koolproxy.txt | grep vi
 local l=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/koolproxy.txt | wc -l")
 local i=luci.sys.exec("cat /usr/share/koolproxy/dnsmasq.adblock | wc -l")
 local h=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/user.txt | wc -l")
+
+local function is_running(name)
+	return luci.sys.call("pidof %s >/dev/null" %{name}) == 0
+end
+
+local function get_status(name)
+	return is_running(name) and translate("RUNNING") or translate("NOT RUNNING")
+end
+
 o=Map(r,translate("koolproxy"),translate("A powerful advertisement blocker. <br /><font color=\"red\">Adblock Plus Host list + koolproxy Blacklist mode runs without loss of bandwidth due to performance issues.<br /></font>"))
 o.template="koolproxy/index"
 t=o:section(TypedSection,"global",translate("Running Status"))
 t.anonymous=true
 e=t:option(DummyValue,"_status",translate("Transparent Proxy"))
-e.template="koolproxy/dvalue"
-e.value=translate("Collecting data...")
+e.value=get_status("koolproxy")
 t=o:section(TypedSection,"global",translate("Global Setting"))
 t.anonymous=true
 t.addremove=false
@@ -73,14 +81,19 @@ update.write=function()
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
 
---e=t:taboption("base",DummyValue,"status1",translate("<label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div></label>"))
---e=t:taboption("base",DummyValue,"status2",translate("<label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div></label>"))
---e=t:taboption("base",DummyValue,"status3",translate("<label><div align=\"left\">自定规则<strong>【<font color=\"#660099\">"..h.."</font>】</strong></div></label>"))
---e=t:taboption("base",DummyValue,"status4",translate("<label><div align=\"left\">Host规则<strong>【<font color=\"#660099\">"..i.."</font>】</strong></div></label>"))
-e=t:taboption("base",DummyValue,"status1",translate("</label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div>"))
-e=t:taboption("base",DummyValue,"status2",translate("</label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div>"))
-e=t:taboption("base",DummyValue,"status3",translate("</label><div align=\"left\">自定规则<strong>【<font color=\"#660099\">"..h.."</font>】</strong></div>"))
-e=t:taboption("base",DummyValue,"status4",translate("</label><div align=\"left\">Host规则<strong>【<font color=\"#660099\">"..i.."</font>】</strong></div>"))
+--e=t:taboption("base",DummyValue,"status1",translate("</label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div>"))
+--e=t:taboption("base",DummyValue,"status2",translate("</label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div>"))
+--e=t:taboption("base",DummyValue,"status3",translate("</label><div align=\"left\">自定规则<strong>【<font color=\"#660099\">"..h.."</font>】</strong></div>"))
+--e=t:taboption("base",DummyValue,"status4",translate("</label><div align=\"left\">Host规则<strong>【<font color=\"#660099\">"..i.."</font>】</strong></div>"))
+
+e=t:taboption("base",DummyValue,"status1",translate("静态规则"))
+e.value=string.format("[ %s共 %s条 ]", s, l)
+e=t:taboption("base",DummyValue,"status2",translate("视频规则"))
+e.value=string.format("[ %s]", u)
+e=t:taboption("base",DummyValue,"status3",translate("自定规则"))
+e.value=string.format("[ %s]", h)
+e=t:taboption("base",DummyValue,"status4",translate("Host规则"))
+e.value=string.format("[ %s]", i)
 e=t:taboption("cert",DummyValue,"c1status",translate("<div align=\"left\">Certificate Restore</div>"))
 e=t:taboption("cert",FileUpload,"")
 e.template="koolproxy/caupload"
