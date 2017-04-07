@@ -68,16 +68,16 @@ restart=t:taboption("base",Button,"restart",translate("Manually update the koolp
 restart.inputtitle=translate("Update manually")
 restart.inputstyle="reload"
 restart.write=function()
-	luci.sys.call("/usr/share/koolproxy/koolproxyupdate rules 2>/dev/null")
+	luci.sys.call("/usr/share/koolproxy/koolproxyupdate rules 2>&1 >/dev/null")
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
 update=t:taboption("base",Button,"update",translate("主程序更新"))
 update.inputtitle=translate("Update manually")
 update.inputstyle="reload"
 update.description = translate(string.format("主程序版本：%s", v))
-o.inputstyle = "reload"
+update.inputstyle = "reload"
 update.write=function()
-	luci.sys.call("/usr/share/koolproxy/koolproxyupdate binary 2>dev/null")
+	luci.sys.call("/usr/share/koolproxy/koolproxyupdate binary 2>&1 >/dev/null")
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
 
