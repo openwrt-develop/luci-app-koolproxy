@@ -132,10 +132,10 @@ Update_APP()
 			i386_pentium|i386_pentium4)
 				ARCH="i386"
 				;;
-			mips_24kc|mips_mips32|mips64_octeon)
+			ar71xx|mips_24kc|mips_mips32|mips64_octeon)
 				ARCH="mips"
 				;;
-			mipsel_24kc|mipsel_74kc|mipsel_mips32)
+			mipsel_24kc|mipsel_74kc|mipsel_mips32|mipsel_1004kc_dsp)
 				ARCH="mipsel"
 				;;
 			powerpc_464fp|powerpc_8540)
