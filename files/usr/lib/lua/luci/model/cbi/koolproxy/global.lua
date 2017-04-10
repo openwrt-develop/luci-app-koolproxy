@@ -71,20 +71,15 @@ restart.write=function()
 	luci.sys.call("/usr/share/koolproxy/koolproxyupdate rules 2>&1 >/dev/null")
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
-update=t:taboption("base",Button,"update",translate("主程序更新"))
+update=t:taboption("base",Button,"update",translate("程序更新"))
 update.inputtitle=translate("Update manually")
 update.inputstyle="reload"
-update.description = translate(string.format("主程序版本：%s", v))
-update.inputstyle = "reload"
+update.description=translate(string.format("程序版本：%s", v))
+update.inputstyle="reload"
 update.write=function()
 	luci.sys.call("/usr/share/koolproxy/koolproxyupdate binary 2>&1 >/dev/null")
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
-
---e=t:taboption("base",DummyValue,"status1",translate("</label><div align=\"left\">静态规则<strong>【<font color=\"#660099\">"..s.."共"..l.."条</font>】</strong></div>"))
---e=t:taboption("base",DummyValue,"status2",translate("</label><div align=\"left\">视频规则<strong>【<font color=\"#660099\">"..u.."</font>】</strong></div>"))
---e=t:taboption("base",DummyValue,"status3",translate("</label><div align=\"left\">自定规则<strong>【<font color=\"#660099\">"..h.."</font>】</strong></div>"))
---e=t:taboption("base",DummyValue,"status4",translate("</label><div align=\"left\">Host规则<strong>【<font color=\"#660099\">"..i.."</font>】</strong></div>"))
 
 e=t:taboption("base",DummyValue,"status1",translate("静态规则"))
 e.value=string.format("[ %s共 %s条 ]", s, l)
@@ -122,7 +117,7 @@ e.write=function(t,t,e)
 	a.writefile("/tmp/adblock",e:gsub("\r\n","\n"))
 	if(luci.sys.call("cmp -s /tmp/adblock /etc/adblocklist/adblock")==1)then
 		a.writefile(i,e:gsub("\r\n","\n"))
-		luci.sys.call("/usr/sbin/adblock >/dev/null")
+		luci.sys.call("/usr/sbin/adblock 2>&1 >/dev/null")
 	end
 	a.remove("/tmp/adblock")
 end
@@ -189,16 +184,15 @@ e:value("adblock",translate("AdBlock Filter"))
 e:value("ghttps",translate("Global Https Filter"))
 e:value("ahttps",translate("AdBlock Https Filter"))
 
-t=o:section(TypedSection,"rss_rule",translate("RSS Rules"),
-translate("请确保第三方规则兼容Koolproxy"))
-t.template="cbi/tblsection"
-t.sortable=true
+t=o:section(TypedSection,"rss_rule",translate("koolproxy 规则订阅"), translate("请确保Koolproxy兼容规则"))
 t.anonymous=true
 t.addremove=true
-e=t:option(Value,"name",translate("Nick Name"))
+t.sortable=true
+t.template="cbi/tblsection"
+e=t:option(Value,"name",translate("规则名称"))
 e.width="10%"
 e.rmempty=false
-e=t:option(Value,"url",translate("EXT Rule"))
+e=t:option(Value,"url",translate("规则地址"))
 e.width="55%"
 e.rmempty=false
 e.placeholder="[https|http|ftp]://[Hostname]/[File]"
@@ -209,9 +203,9 @@ function e.validate(self, value)
 		return value
 	end
 end
-e=t:option(DummyValue,"time",translate("Update Time"))
+e=t:option(DummyValue,"time",translate("更新时间"))
 e.width="15%"
-e=t:option(Flag,"load",translate("Enable"))
+e=t:option(Flag,"load",translate("启用"))
 e.width="10%"
 e.default=0
 e.rmempty=false
