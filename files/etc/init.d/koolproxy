@@ -267,27 +267,39 @@ start_service() {
 	procd_set_param stdout 1
 	procd_set_param stderr 1
 	procd_close_instance
+
+	echo "koolproxy has started."
 }
 
 stop_service() {
 	post_stop
+	echo "koolproxy has stopped."
 }
 
 reload_service() {
-        stop
-        start
+	echo "koolproxy reload service."
+	stop
+	sleep 1
+	start
+}
+
+restart() {
+	echo "koolproxy restart service."
+	stop
+	sleep 1
+	start
 }
 
 delay_start() {
-       (sleep $1 && start >/dev/null 2>&1) &
+	(sleep $1 && start >/dev/null 2>&1) &
 }
 
 boot() {
-       local delay=$(config_t_get global startup_delay 0)
-       if [ "$delay" -gt 0 ]; then
-               delay_start $delay
-       else
-               start
-       fi
-       return 0
+	local delay=$(config_t_get global startup_delay 0)
+	if [ "$delay" -gt 0 ]; then
+		delay_start $delay
+	else
+		start
+	fi
+	return 0
 }
