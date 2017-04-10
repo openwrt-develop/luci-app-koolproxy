@@ -86,9 +86,11 @@ CompareFile()
 }
 
 update_exrule(){
+	local name
 	local file
 	local exrule
 	local enable
+	config_get name $1 name
 	config_get file $1 file
 	config_get exrule $1 url
 	config_get enable $1 load
@@ -101,9 +103,9 @@ update_exrule(){
 		if [ "$?" == "0" ]; then
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
 			uci commit koolproxy
-			echo $(date): 更新成功！ $nick: $exrule >>$LOGFILE
+			echo $(date): 更新成功！ $name: $exrule >>$LOGFILE
 		else
-			echo $(date): 更新失败！ $nick: $exrule >>$LOGFILE
+			echo $(date): 更新失败！ $name: $exrule >>$LOGFILE
 		fi
 		echo >>$LOGFILE
 	fi
@@ -135,23 +137,20 @@ Update_APP()
 			ar71xx|mips_24kc|mips_mips32|mips64_octeon)
 				ARCH="mips"
 				;;
-			mipsel_24kc|mipsel_74kc|mipsel_mips32|mipsel_1004kc_dsp)
+			mipsel_24kc|mipsel_24kec_dsp|mipsel_74kc|mipsel_mips32|mipsel_1004kc_dsp)
 				ARCH="mipsel"
-				;;
-			powerpc_464fp|powerpc_8540)
-				ARCH="powerpc"
 				;;
 			x86_64)
 				ARCH="x86_64"
 				;;
 			*)
-				echo "Architectures not support."
+				echo $(date):: Architectures $a not support >>$LOGFILE
 				exit 0
 				;;
 		esac
 	done
 
-	#echo Target Arch: $ARCH >>$LOGFILE
+	echo $(date): Target Arch: $ARCH >>$LOGFILE
 
 	wget --quiet --timeout=5 "http://firmware.koolshare.cn/binary/KoolProxy/$ARCH" -O $TEMPPATH/koolproxy
 	chmod +x $TEMPPATH/koolproxy
@@ -194,13 +193,17 @@ Reduce_Log $LOGFILE
 #fi
 if [ "$1" == "rules" ]; then
 	Update_RSSRule
+	RestartApp
+
 	Update_Host
 elif [ "$1" == "binary" ]; then
 	Update_APP
+	RestartApp
 else
 	Update_APP
 	Update_RSSRule
+	RestartApp
+
 	Update_Host
 fi
-RestartApp
 InitEnv
