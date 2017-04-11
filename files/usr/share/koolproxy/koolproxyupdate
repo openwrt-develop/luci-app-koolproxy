@@ -98,8 +98,8 @@ update_exrule(){
 		if [ $enable -ne 1 ]; then
 			return
 		fi
-		wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATAPATH/$file
 		echo $(date): ---------------------------------------------------- >>$LOGFILE
+		wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATAPATH/$file
 		if [ "$?" == "0" ]; then
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
 			uci commit koolproxy
