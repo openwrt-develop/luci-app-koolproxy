@@ -41,10 +41,10 @@ t:tab("logs",translate("View the logs"))
 e=t:taboption("base",Flag,"enabled",translate("Enable"))
 e.default=0
 e.rmempty=false
-e=t:taboption("base",Value, "startup_delay", translate("Startup Delay"))
-e:value(0, translate("Not enabled"))
+e=t:taboption("base",Value, "startup_delay", translate("自启动延时"))
+e:value(0, translate("禁用"))
 for _, v in ipairs({5, 10, 15, 25, 40}) do
-	e:value(v, translate("%u seconds") %{v})
+	e:value(v, translate("%u 秒") %{v})
 end
 e.datatype = "uinteger"
 e.default = 0
@@ -100,7 +100,7 @@ if nixio.fs.access("/usr/share/koolproxy/data/certs/ca.crt")then
 	e.inputtitle=translate("Backup Download")
 	e.inputstyle="reload"
 	e.write=function()
-		luci.sys.call("/usr/share/koolproxy/camanagement backup")
+		luci.sys.call("/usr/share/koolproxy/camanagement backup 2>&1 >/dev/null")
 		Download()
 		luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 	end
@@ -244,7 +244,7 @@ function(o,a,i)
 	if i and e then
 		e:close()
 		e=nil
-		luci.sys.call("/usr/share/koolproxy/camanagement restore")
+		luci.sys.call("/usr/share/koolproxy/camanagement restore 2>&1 >/dev/null")
 	end
 end
 )
