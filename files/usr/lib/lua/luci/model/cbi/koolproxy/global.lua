@@ -24,7 +24,7 @@ local function get_status(name)
 end
 
 o=Map(r,translate("koolproxy"),translate("A powerful advertisement blocker. <br /><font color=\"red\">Adblock Plus Host list + koolproxy Blacklist mode runs without loss of bandwidth due to performance issues.<br /></font>"))
-o.template="koolproxy/index"
+--o.template="koolproxy/index"
 t=o:section(TypedSection,"global",translate("Running Status"))
 t.anonymous=true
 e=t:option(DummyValue,"_status",translate("Transparent Proxy"))
