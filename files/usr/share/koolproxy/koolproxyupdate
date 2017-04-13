@@ -46,9 +46,8 @@ CompareFile()
 	local descript=$1
 	local localPath=$2
 	local remoteUrl=$3
-	local remoteDate=$4
 
-	echo $(date): ------------------- $descript更新 ------------------- >>$LOGFILE
+	echo $(date "+%F %T"): ------------------- $descript更新 ------------------- >>$LOGFILE
 	local filename=`basename $localPath`
 	local remotePath="$TEMPPATH/$filename"
 	wget-ssl -qT5 --no-check-certificate "$remoteUrl" -O "$remotePath"
@@ -63,23 +62,22 @@ CompareFile()
 		remoteMD5=`md5sum "$remotePath" | awk '{print $1}'`
 		remoteNum=`cat "$remotePath" | grep -v '^!' | wc -l`
 
-		echo $(date): 本地版本MD5：$localMD5 >>$LOGFILE
-		echo $(date): 本地版本条数：$localNum >>$LOGFILE
+		echo $(date "+%F %T"): 本地版本MD5：$localMD5 >>$LOGFILE
+		echo $(date "+%F %T"): 本地版本条数：$localNum >>$LOGFILE
 		echo >>$LOGFILE
-		echo $(date): 在线版本日期：$remoteDate >>$LOGFILE
-		echo $(date): 在线版本MD5：$remoteMD5 >>$LOGFILE
-		echo $(date): 在线版本条数：$remoteNum >>$LOGFILE
+		echo $(date "+%F %T"): 在线版本MD5：$remoteMD5 >>$LOGFILE
+		echo $(date "+%F %T"): 在线版本条数：$remoteNum >>$LOGFILE
 		echo >>$LOGFILE
 
 		if [ "$localMD5" != "$remoteMD5" ];then
-			echo $(date): 检测到更新，开始更新静态规则！ >>$LOGFILE
+			echo $(date "+%F %T"): 检测到更新，开始更新规则！ >>$LOGFILE
 			mv -f "$remotePath" "$localPath"
-			echo $(date): 更新成功！ >>$LOGFILE
+			echo $(date "+%F %T"): 更新成功！ >>$LOGFILE
 			echo >>$LOGFILE
 			return 0
 		fi
 	else
-		echo "$(date): 获取在线版本时出现错误! " >>$LOGFILE
+		echo "$(date "+%F %T"): 获取在线版本时出现错误! " >>$LOGFILE
 		echo >>$LOGFILE
 	fi
 	return 1
@@ -98,31 +96,27 @@ update_exrule(){
 		if [ $enable -ne 1 ]; then
 			return
 		fi
-		echo $(date): ---------------------------------------------------- >>$LOGFILE
-		wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $DATAPATH/$file
+		CompareFile "$name" "$DATAPATH/$file" "$exrule"
 		if [ "$?" == "0" ]; then
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
 			uci commit koolproxy
-			echo $(date): 更新成功！ $name: $exrule >>$LOGFILE
-		else
-			echo $(date): 更新失败！ $name: $exrule >>$LOGFILE
 		fi
 		echo >>$LOGFILE
 	fi
 }
 
-Update_RSSRule(){
+UpdateRule(){
 	config_load $CONFIG
 	config_foreach update_exrule rss_rule
 }
 
-Update_Host()
+UpdateHost()
 {
 	/usr/sbin/adblockplus >>$LOGFILE 2>&1 &
 	echo >>$LOGFILE
 }
 
-Update_APP()
+UpdateApp()
 {
 	for a in $(opkg print-architecture | awk '{print $2}'); do
 		case "$a" in
@@ -144,13 +138,13 @@ Update_APP()
 				ARCH="x86_64"
 				;;
 			*)
-				echo $(date):: Architectures $a not support >>$LOGFILE
+				echo $(date "+%F %T"): Architectures $a not support >>$LOGFILE
 				exit 0
 				;;
 		esac
 	done
 
-	echo $(date): Target Arch: $ARCH >>$LOGFILE
+	echo $(date "+%F %T"): Target Arch: $ARCH >>$LOGFILE
 
 	wget --quiet --timeout=5 "http://firmware.koolshare.cn/binary/KoolProxy/$ARCH" -O $TEMPPATH/koolproxy
 	chmod +x $TEMPPATH/koolproxy
@@ -158,13 +152,13 @@ Update_APP()
 	old_version=`/usr/share/koolproxy/koolproxy -v`
 	new_version=`$TEMPPATH/koolproxy -v`
 
-	echo $(date): ---------------------------------------------------- >>$LOGFILE
+	echo $(date "+%F %T"): ---------------------------------------------------- >>$LOGFILE
 	if [ "$old_version" != "$new_version" ]; then
 		mv $TEMPPATH/koolproxy /usr/share/koolproxy/koolproxy
-		echo $(date): koolproxy $new_version 更新成功！ >>$LOGFILE
+		echo $(date "+%F %T"): koolproxy $new_version 更新成功！ >>$LOGFILE
 	else
 		rm -f $TEMPPATH/koolproxy
-		echo $(date): koolproxy $old_version 本地已经是最新版本，无需更新！ >>$LOGFILE
+		echo $(date "+%F %T"): koolproxy $old_version 本地已经是最新版本，无需更新！ >>$LOGFILE
 	fi
 	echo >>$LOGFILE
 }
@@ -179,31 +173,31 @@ Reduce_Log $LOGFILE
 #	r1=$?
 #	CompareFile "视频规则" "/usr/share/koolproxy/data/1.dat" "$SERVERURL/1.dat" "$(cat "$version" | awk 'NR==4{print}')"
 #	r2=$?
-#	echo $(date): ---------------------------------------------------- >>$LOGFILE
+#	echo $(date "+%F %T"): ---------------------------------------------------- >>$LOGFILE
 #	if [ $r1 -eq 0 ] || [ $r2 -eq 0 ]; then
-#		echo $(date): 正在自动重启使更新内容生效，请稍后！ >>$LOGFILE
+#		echo $(date "+%F %T"): 正在自动重启使更新内容生效，请稍后！ >>$LOGFILE
 #		RestartApp
-#		echo $(date): 重启成功！ >>$LOGFILE
+#		echo $(date "+%F %T"): 重启成功！ >>$LOGFILE
 #	else
-#		echo $(date): 本地已经是最新版本，无需更新！ >>$LOGFILE
+#		echo $(date "+%F %T"): 本地已经是最新版本，无需更新！ >>$LOGFILE
 #	fi
 #	echo >>$LOGFILE
 #else
-#	echo $(date): 获取在线版本时出现错误，请检查你的网络环境！ >>$LOGFILE
+#	echo $(date "+%F %T"): 获取在线版本时出现错误，请检查你的网络环境！ >>$LOGFILE
 #fi
 if [ "$1" == "rules" ]; then
-	Update_RSSRule
+	UpdateRule
 	RestartApp
 
-	Update_Host
+	UpdateHost
 elif [ "$1" == "binary" ]; then
-	Update_APP
+	UpdateApp
 	RestartApp
 else
-	Update_APP
-	Update_RSSRule
+	UpdateApp
+	UpdateRule
 	RestartApp
 
-	Update_Host
+	UpdateHost
 fi
 InitEnv
