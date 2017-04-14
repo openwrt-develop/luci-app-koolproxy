@@ -38,7 +38,9 @@ InitEnv()
 
 RestartApp()
 {
-	/etc/init.d/koolproxy restart
+	/etc/init.d/koolproxy stop
+	sleep 1
+	/etc/init.d/koolproxy start
 }
 
 CompareFile()
@@ -50,7 +52,7 @@ CompareFile()
 	echo $(date "+%F %T"): ------------------- $descript更新 ------------------- >>$LOGFILE
 	local filename=`basename $localPath`
 	local remotePath="$TEMPPATH/$filename"
-	wget-ssl -qT5 --no-check-certificate "$remoteUrl" -O "$remotePath"
+	wget -qT5 --no-check-certificate "$remoteUrl" -O "$remotePath"
 	if [ "$?" == "0" ]; then
 		if [ -f "$localPath" ]; then
 			localMD5=`md5sum "$localPath" | awk '{print $1}'`
@@ -146,7 +148,7 @@ UpdateApp()
 
 	echo $(date "+%F %T"): Target Arch: $ARCH >>$LOGFILE
 
-	wget --quiet --timeout=5 "http://firmware.koolshare.cn/binary/KoolProxy/$ARCH" -O $TEMPPATH/koolproxy
+	wget -qT5 "http://firmware.koolshare.cn/binary/KoolProxy/$ARCH" -O $TEMPPATH/koolproxy
 	chmod +x $TEMPPATH/koolproxy
 
 	old_version=`/usr/share/koolproxy/koolproxy -v`

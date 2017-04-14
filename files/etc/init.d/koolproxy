@@ -275,23 +275,23 @@ start_service() {
 	procd_set_param stderr 1
 	procd_close_instance
 
-	echo "koolproxy has started."
+	logger "koolproxy has started."
 }
 
 stop_service() {
 	post_stop
-	echo "koolproxy has stopped."
+	logger "koolproxy has stopped."
 }
 
 reload_service() {
-	echo "koolproxy reload service."
+	logger "koolproxy reload service."
 	stop
 	sleep 1
 	start
 }
 
 restart() {
-	echo "koolproxy restart service."
+	logger "koolproxy restart service."
 	stop
 	sleep 1
 	start
