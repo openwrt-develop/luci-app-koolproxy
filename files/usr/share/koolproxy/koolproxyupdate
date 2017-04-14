@@ -40,8 +40,6 @@ RestartApp()
 {
 	/etc/init.d/koolproxy stop
 	sleep 1
-	kill -9 $(ps|grep '/usr/share/koolproxy/koolproxy'|grep -v 'grep'|awk '{print$1}')
-	sleep 1
 	/etc/init.d/koolproxy start
 }
 
