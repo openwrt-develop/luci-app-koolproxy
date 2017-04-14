@@ -1,6 +1,6 @@
 #!/bin/sh
 echo "$(date "+%F %T"): 正在下载adblockplus规则..."
-wget --quiet --no-check-certificate https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt -O /tmp/adlist.txt
+wget-ssl --quiet --no-check-certificate https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt -O /tmp/adlist.txt
 if [ "$?" == "0" ]; then
 	grep ^\|\|[^\*]*\^$ /tmp/adlist.txt | sed -e 's:||:address\=\/:' -e 's:\^:/0\.0\.0\.0:' > /tmp/dnsmasq.adblock
 	rm -f /tmp/adlist.txt
