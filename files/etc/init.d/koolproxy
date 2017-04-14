@@ -180,7 +180,11 @@ add_rule() {
 	SS_INDEX=`iptables -t nat -L PREROUTING|tail -n +3|sed -n -e '/^SHADOWSOCKS/='`
 	if [ -n "$SS_INDEX" ]; then
 		let SS_INDEX+=1
+	else
+		SS_INDEX=`iptables -t nat -L PREROUTING|tail -n +3|sed -n -e '/^SS_SPEC_LAN_DG/='`
+		[ -n "$SS_INDEX" ] && let SS_INDEX+=1
 	fi
+
 	#确保添加到SHADOWSOCKS规则之后
 	iptables -t nat -I PREROUTING $SS_INDEX -p tcp -j KOOLPROXY
 	#创建所需的ipset
@@ -210,11 +214,7 @@ add_rule() {
 }
 
 del_rule() {
-	#iptables -t nat -D PREROUTING -p tcp -j KOOLPROXY 2>/dev/null
-	KP_INDEX=`iptables -t nat -L PREROUTING|tail -n +3|sed -n -e '/^KOOLPROXY/='`
-	if [ -n "$KP_INDEX" ]; then
-		iptables -t nat -D PREROUTING $KP_INDEX
-	fi
+	iptables -t nat -D PREROUTING -p tcp -j KOOLPROXY 2>/dev/null
 	iptables -t nat -F KOOLPROXY 2>/dev/null && iptables -t nat -X KOOLPROXY 2>/dev/null
 	iptables -t nat -F KOOLPROXY_GLO 2>/dev/null && iptables -t nat -X KOOLPROXY_GLO 2>/dev/null
 	iptables -t nat -F KOOLPROXY_ADB 2>/dev/null && iptables -t nat -X KOOLPROXY_ADB 2>/dev/null
@@ -226,6 +226,7 @@ export_ipt_rules() {
 	FWI=$(uci get firewall.koolproxy.path 2>/dev/null)
 	[ -n "$FWI" ] || return 0
 	cat <<-CAT >>$FWI
+	iptables -t nat -D PREROUTING -p tcp -j KOOLPROXY 2>/dev/null
 	iptables-restore -n <<-EOF
 	$(iptables-save | grep -E "KOOLPROXY|^\*|^COMMIT" |\
 		sed -e "s/^-A \(PREROUTING\)/-I \1 1/")
