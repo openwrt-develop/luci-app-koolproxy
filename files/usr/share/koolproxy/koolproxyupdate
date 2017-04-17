@@ -149,6 +149,11 @@ UpdateApp()
 	echo $(date "+%F %T"): Target Arch: $ARCH >>$LOGFILE
 
 	wget -qT5 "http://firmware.koolshare.cn/binary/KoolProxy/$ARCH" -O $TEMPPATH/koolproxy
+	if [ "$?" != "0" ]; then
+		echo "$(date "+%F %T"): 获取程序在线版本时出现错误! " >>$LOGFILE
+		echo >>$LOGFILE
+		exit 0
+	fi
 	chmod +x $TEMPPATH/koolproxy
 
 	old_version=`/usr/share/koolproxy/koolproxy -v`

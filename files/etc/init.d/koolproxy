@@ -181,7 +181,7 @@ add_rule() {
 	if [ -n "$SS_INDEX" ]; then
 		let SS_INDEX+=1
 	else
-		SS_INDEX=`iptables -t nat -L PREROUTING|tail -n +3|sed -n -e '/^SS_SPEC_LAN_DG/='`
+		SS_INDEX=`iptables -t nat -L PREROUTING|tail -n +3|sed -n -e '/^SS_SPEC*/='`
 		[ -n "$SS_INDEX" ] && let SS_INDEX+=1
 	fi
 
