@@ -302,16 +302,8 @@ restart() {
 	start
 }
 
-delay_start() {
-	(sleep $1 && start >/dev/null 2>&1) &
-}
-
 boot() {
 	local delay=$(config_t_get global startup_delay 0)
-	if [ "$delay" -gt 0 ]; then
-		delay_start $delay
-	else
-		start
-	fi
+	(sleep $delay && start >/dev/null 2>&1) &
 	return 0
 }
