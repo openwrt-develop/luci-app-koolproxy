@@ -4,34 +4,3 @@ config global
 	option time_update '4'
 	option enabled '0'
 	option startup_delay '0'
-
-config rss_rule
-	option name 'adbyby'
-	option url 'https://raw.githubusercontent.com/dsyo2008/lazy_for_koolproxy/master/lazy_kp.txt'
-	option load '0'
-
-config rss_rule
-	option name '静态规则'
-	option url 'http://koolshare.b0.upaiyun.com/rules/koolproxy.txt'
-	option load '1'
-
-config rss_rule
-	option name '视频规则'
-	option url 'http://koolshare.b0.upaiyun.com/rules/1.dat'
-	option load '1'
-
-config rss_rule
-	option name '游戏规则'
-	option url 'http://koolshare.b0.upaiyun.com/rules/filter_game.txt'
-	option load '1'
-
-config rss_rule
-	option name '临时规则'
-	option url 'http://koolshare.b0.upaiyun.com/rules/add_rules.txt'
-	option load '1'
-
-config rss_rule
-	option name '手机规则'
-	option url 'https://coding.net/u/Carseason/p/koolproxy/git/raw/master/koolproxy_wp.txt'
-	option load '1'
-

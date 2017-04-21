@@ -12,7 +12,7 @@ USE_PROCD=1
 
 CONFIG=koolproxy
 PROG_PATH=/usr/share/koolproxy
-DATA_PATH=$PROG_PATH/data
+RULE_PATH=$PROG_PATH/data/rule
 TEMP_PATH=/tmp
 
 config_n_get() {
@@ -44,7 +44,7 @@ load_exrule() {
 	config_get enable $1 load
 	if [ -n "$exrule" ]; then
 		if [ $enable -ne 1 ]; then
-			[ -n "$file" ] && [ -f $DATA_PATH/$file ] && rm -f $DATA_PATH/$file
+			[ -n "$file" ] && [ -f $RULE_PATH/$file ] && rm -f $RULE_PATH/$file
 			uci set koolproxy.$1.time=""
 			uci commit koolproxy
 			return
@@ -56,12 +56,12 @@ load_exrule() {
 			uci commit koolproxy
 		fi
 
-		if [ ! -f $DATA_PATH/$file ]; then
+		if [ ! -f $RULE_PATH/$file ]; then
 			wget-ssl --quiet --timeout=5 --no-check-certificate $exrule -O $TEMP_PATH/$file
 			if [ "$?" == "0" ]; then
 				uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
 				uci commit koolproxy
-				mv $TEMP_PATH/$file $DATA_PATH/$file
+				mv $TEMP_PATH/$file $RULE_PATH/$file
 			else
 				echo "koolproxy download rule $file failed!"
 				[ -f $TEMP_PATH/$file ] && rm -f $TEMP_PATH/$file
@@ -247,7 +247,7 @@ pre_start() {
 	iptables -t nat -C PREROUTING -p tcp -j KOOLPROXY 2>/dev/null && [ $? -eq 0 ] && return 0;
 	gen_ca
 	#加载RULES
-	config_foreach load_exrule rss_rule
+	#config_foreach load_exrule rss_rule
 	#/usr/share/koolproxy/koolproxy -d >/dev/null 2>&1 &
 	add_rule
 	add_koolproxy_cru

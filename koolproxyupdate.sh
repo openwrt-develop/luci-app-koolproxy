@@ -1,9 +1,9 @@
-#wget -O- 'https://rules.ngrok.wang/version' > files/usr/share/koolproxy/data/version
-#wget -O- 'https://rules.ngrok.wang/koolproxy.txt' > files/usr/share/koolproxy/data/koolproxy.txt
-#wget -O- 'https://rules.ngrok.wang/1.dat' > files/usr/share/koolproxy/data/1.dat 
-wget -O- 'http://firmware.koolshare.cn/binary/KoolProxy/arm' > files/bin/arm
-wget -O- 'http://firmware.koolshare.cn/binary/KoolProxy/i386' > files/bin/i386
-wget -O- 'http://firmware.koolshare.cn/binary/KoolProxy/mips' > files/bin/mips
-wget -O- 'http://firmware.koolshare.cn/binary/KoolProxy/mipsel' > files/bin/mipsel
-wget -O- 'http://firmware.koolshare.cn/binary/KoolProxy/x86_64' > files/bin/x86_64
+wget 'https://raw.githubusercontent.com/koolproxy/koolproxy_rules/master/1.dat' -O files/usr/share/koolproxy/data/rules/1.dat
+wget 'https://raw.githubusercontent.com/koolproxy/koolproxy_rules/master/koolproxy.txt' -O files/usr/share/koolproxy/data/rules/koolproxy.txt
+wget 'https://raw.githubusercontent.com/koolproxy/koolproxy_rules/master/user.txt' -O files/usr/share/koolproxy/data/rules/user.txt
+wget 'https://github.com/koolproxy/koolproxy_rules/blob/master/downloads/arm?raw=true' -O files/bin/arm
+wget 'https://github.com/koolproxy/koolproxy_rules/blob/master/downloads/i386?raw=true' -O files/bin/i386
+wget 'https://github.com/koolproxy/koolproxy_rules/blob/master/downloads/mips?raw=true' -O files/bin/mips
+wget 'https://github.com/koolproxy/koolproxy_rules/blob/master/downloads/mipsel?raw=true' -O files/bin/mipsel
+wget 'https://github.com/koolproxy/koolproxy_rules/blob/master/downloads/x86_64?raw=true' -O files/bin/x86_64
 chmod +x files/bin/*

@@ -8,7 +8,7 @@ APPNAME="koolproxy"
 
 CONFIG=koolproxy
 TEMPPATH="/tmp/$APPNAME"
-DATAPATH="/usr/share/koolproxy/data"
+RULEPATH="/usr/share/koolproxy/data/rules/"
 LOGFILE="/var/log/$APPNAME.log"
 
 config_t_get() {
@@ -98,7 +98,7 @@ update_exrule(){
 		if [ $enable -ne 1 ]; then
 			return
 		fi
-		CompareFile "$name" "$DATAPATH/$file" "$exrule"
+		CompareFile "$name" "$RULEPATH/$file" "$exrule"
 		if [ "$?" == "0" ]; then
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
 			uci commit koolproxy
@@ -193,19 +193,21 @@ Reduce_Log $LOGFILE
 #else
 #	echo $(date "+%F %T"): 获取在线版本时出现错误，请检查你的网络环境！ >>$LOGFILE
 #fi
-if [ "$1" == "rules" ]; then
-	UpdateRule
-	RestartApp
 
-	UpdateHost
-elif [ "$1" == "binary" ]; then
-	UpdateApp
-	RestartApp
-else
-	UpdateApp
-	UpdateRule
-	RestartApp
-
-	UpdateHost
-fi
+#if [ "$1" == "rules" ]; then
+#	UpdateRule
+#	RestartApp
+#
+#	UpdateHost
+#elif [ "$1" == "binary" ]; then
+#	UpdateApp
+#	RestartApp
+#else
+#	UpdateApp
+#	UpdateRule
+#	RestartApp
+#
+#	UpdateHost
+#fi
+UpdateHost
 InitEnv
