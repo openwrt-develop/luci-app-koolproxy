@@ -31,7 +31,7 @@ endef
 define Package/luci-app-koolproxy/postinst
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
-	( . /etc/uci-defaults/luci-app-koolproxy ) && rm -f /etc/uci-defaults/luci-app-koolproxy
+	( . /etc/uci-defaults/luci-koolproxy ) && rm -f /etc/uci-defaults/luci-koolproxy
 	rm -f /tmp/luci-indexcache
 fi
 exit 0
@@ -53,7 +53,7 @@ define Package/luci-app-koolproxy/install
 	$(INSTALL_DIR) $(1)/usr/share/koolproxy/data/certs/
 	$(INSTALL_DIR) $(1)/usr/share/koolproxy/data/rules/
 
-	$(INSTALL_BIN) ./files/etc/uci-defaults/luci-koolproxy $(1)/etc/uci-defaults/luci-app-koolproxy
+	$(INSTALL_BIN) ./files/etc/uci-defaults/luci-koolproxy $(1)/etc/uci-defaults/luci-koolproxy
 	$(INSTALL_BIN) ./files/etc/init.d/* $(1)/etc/init.d/
 	$(INSTALL_DATA) ./files/etc/config/* $(1)/etc/config/
 	$(INSTALL_DATA) ./files/etc/adblocklist/* $(1)/etc/adblocklist/
