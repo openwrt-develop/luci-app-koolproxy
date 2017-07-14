@@ -173,8 +173,8 @@ e.rmempty=true
 e=t:option(Value,"ipaddr",translate("IP Address"))
 e.width="20%"
 e.datatype="ip4addr"
-n.net.arptable(function(t)
-	e:value(t["IP address"])
+n.net.ipv4_hints(function(t, a)
+	e:value(t,"%s (%s)"%{t,a})
 end)
 e=t:option(Value,"mac",translate("MAC Address"))
 e.width="20%"
