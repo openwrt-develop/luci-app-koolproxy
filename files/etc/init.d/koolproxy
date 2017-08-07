@@ -276,6 +276,8 @@ start_service() {
 	if [ $VIDEO_MODE -eq 1 ]; then
 		procd_append_param command -e
 	fi
+	procd_append_param command --mark
+	procd_append_param command --ttl 160
 
 	procd_set_param respawn
 
