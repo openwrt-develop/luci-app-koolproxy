@@ -177,17 +177,7 @@ add_rule() {
 	iptables -t nat -N KOOLPROXY_ADB 2>/dev/null
 	iptables -t nat -N KOOLPROXY_HTTPS_GLO 2>/dev/null
 	iptables -t nat -N KOOLPROXY_HTTPS_ADB 2>/dev/null
-	#获取SHADOWSOCKS规则行号
-	SS_INDEX=`iptables -t nat -L PREROUTING|tail -n +3|sed -n -e '/^SHADOWSOCKS/='`
-	if [ -n "$SS_INDEX" ]; then
-		let SS_INDEX+=1
-	else
-		SS_INDEX=`iptables -t nat -L PREROUTING|tail -n +3|sed -n -e '/^SS_SPEC*/='`
-		[ -n "$SS_INDEX" ] && let SS_INDEX+=1
-	fi
-
-	#确保添加到SHADOWSOCKS规则之后
-	iptables -t nat -I PREROUTING $SS_INDEX -p tcp -j KOOLPROXY
+	iptables -t nat -I PREROUTING 1 -p tcp -j KOOLPROXY
 	#创建所需的ipset
 	IPSET_ADB="adblock"
 	ipset -! create $IPSET_ADB nethash && ipset -! add $IPSET_ADB 110.110.110.110 2>/dev/null
