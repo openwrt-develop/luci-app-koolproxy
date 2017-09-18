@@ -1,31 +1,18 @@
 !x  -----------------------------------------------------------------------------------------------------------------
-!x  -----[KoolProxy Plus 3.6.1]
-!x  -----update[rules]: 2017-7-1 1:36
+!x  -----[KoolProxy Plus 3.6.2]
+!x  -----update[rules]: 2017-9-13 10:50
 !x  -----Thanks: From KP Rule Group -- <houzi-> <today2004> <a-len> <xiaoxia> <leo> <Carseason>
 !x  -----Thanks for help: <CJX> <yiclear> <xwhyz> 
 !x  -----Tip: Welcome to rule group,Please Send mail to <wojiaolinmu008@gmail.com>
 !x  -----------------------------------------------------------------------------------------------------------------
-
+!|https://pan.baidu.com,yun.baidu.com##[id^="share-ad-"],A#share_ad_info_panl,div[id^="cpro_"],img.share-center,.ad-platform-tips,.banner-active
 !x  -----------------------------------------------------------------------------------------------------------------
+!|https://live.bilibili.com/*$r@/^https:\/\/(.*)/(\d*)/@http://$1/$2@
+!|https://www.bilibili.com/*$r@/^https:\/\/(.*)/(\d*)/@http://$1/$2@
 !||static.youku.com/$r@http://static.youku.com/*/v/swf/upsplayer/player_yknpsv.swf@http://koolshare.b0.upaiyun.com/kp/swf/dszw/youku.swf@
 !||static.youku.com/$r@http://static.youku.com/*/v/swf/upsplayer/loader.swf@http://koolshare.b0.upaiyun.com/kp/swf/dszw/youku.swf@
 !x  -----------------------------------------------------------------------------------------------------------------
 !|https://api.bilibili.com/x/web-show/res/loc?pf=0&id=160
-|https://*/*=adunit&
-|https://ads.youtube.com
-|https://azabu-u.ac.jp
-||https://couchcoaster.jp
-|https://crt.comodoca.com
-|https://delivery.dmkt-sp.jp
-|https://ehg-youtube.hitbox.com
-||https://m-78.jp
-|https://nichibenren.or.jp
-|https://nicorette.co.kr
-|https://ssl-youtube.2cnt.net
-|https://youtube.112.2o7.net
-|https://youtube.2cnt.net
-|https://m.youtube.com/_get_ads
-|https://stats.tubemogul.com/stats/
 !x  -----------------------------------------------------------------------------------------------------------------
 
 !x  -----------------------------------------------------------------------------------------------------------------

@@ -7,8 +7,9 @@
 APPNAME="koolproxy"
 
 CONFIG=koolproxy
-TEMPPATH="/tmp/$APPNAME"
-RULEPATH="/usr/share/koolproxy/data/rules/"
+TEMPPATH=/tmp/$APPNAME
+DATAPATH=/usr/share/koolproxy/data
+RULEPATH=$DATAPATH/rules
 LOGFILE="/var/log/$APPNAME.log"
 
 config_t_get() {
@@ -103,11 +104,13 @@ update_exrule(){
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
 			uci commit koolproxy
 		fi
+		cat $RULEPATH/$file >>$RULEPATH/user.txt
 		echo >>$LOGFILE
 	fi
 }
 
 UpdateRule(){
+	cp $DATAPATH/user.txt $RULEPATH/user.txt
 	config_load $CONFIG
 	config_foreach update_exrule rss_rule
 }
@@ -209,5 +212,7 @@ Reduce_Log $LOGFILE
 #
 #	UpdateHost
 #fi
+UpdateRule
+RestartApp
 UpdateHost
 InitEnv

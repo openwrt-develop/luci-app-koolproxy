@@ -41,10 +41,10 @@ t:tab("logs",translate("View the logs"))
 e=t:taboption("base",Flag,"enabled",translate("Enable"))
 e.default=0
 e.rmempty=false
-e=t:taboption("base",Value, "startup_delay", translate("自启动延时"))
-e:value(0, translate("禁用"))
+e=t:taboption("base",Value, "startup_delay", translate("Startup Delay"))
+e:value(0, translate("Not enabled"))
 for _, v in ipairs({5, 10, 15, 25, 40}) do
-	e:value(v, translate("%u 秒") %{v})
+	e:value(v, translate("%u seconds") %{v})
 end
 e.datatype = "uinteger"
 e.default = 0
@@ -55,8 +55,9 @@ e.rmempty=false
 e:value("disable",translate("No Filter"))
 e:value("global",translate("Global Filter"))
 e:value("adblock",translate("AdBlock Filter"))
-e=t:taboption("base",Flag,"video_mode",translate("只加载视频规则"))
+e=t:taboption("base",Flag,"video_mode",translate("视频模式"))
 e.default=0
+e.description=translate("只加载视频规则")
 e=t:taboption("base",Flag,"adblock",translate("Open adblock"))
 e.default=0
 e:depends("filter_mode","adblock")
@@ -140,7 +141,7 @@ end
 e.write=function(t,t,e)
 	a.writefile(i,e:gsub("\r\n","\n"))
 end
-local i="/usr/share/koolproxy/data/rules/user.txt"
+local i="/usr/share/koolproxy/data/user.txt"
 e=t:taboption("customlist",TextValue,"configfile1")
 e.description=translate("Enter your custom rules, each row.")
 e.rows=28
@@ -173,14 +174,18 @@ e.rmempty=true
 e=t:option(Value,"ipaddr",translate("IP Address"))
 e.width="20%"
 e.datatype="ip4addr"
-n.net.ipv4_hints(function(t, a)
-	e:value(t,"%s (%s)"%{t,a})
+luci.ip.neighbors({family = 4}, function(neighbor)
+	if neighbor.reachable then
+		e:value(neighbor.dest:string(), "%s (%s)" %{neighbor.dest:string(), neighbor.mac})
+	end
 end)
 e=t:option(Value,"mac",translate("MAC Address"))
 e.width="20%"
 e.rmempty=true
-n.net.mac_hints(function(t,a)
-	e:value(t,"%s (%s)"%{t,a})
+luci.ip.neighbors({family = 4}, function(neighbor)
+	if neighbor.reachable then
+		e:value(neighbor.mac, "%s (%s)" %{neighbor.mac, neighbor.dest:string()})
+	end
 end)
 e=t:option(ListValue,"filter_mode",translate("Filter Mode"))
 e.width="20%"
@@ -192,33 +197,36 @@ e:value("adblock",translate("AdBlock Filter"))
 e:value("ghttps",translate("Global Https Filter"))
 e:value("ahttps",translate("AdBlock Https Filter"))
 
---[[
 t=o:section(TypedSection,"rss_rule",translate("koolproxy 规则订阅"), translate("请确保Koolproxy兼容规则"))
 t.anonymous=true
 t.addremove=true
 t.sortable=true
 t.template="cbi/tblsection"
-e=t:option(Value,"name",translate("规则名称"))
-e.width="10%"
-e.rmempty=false
-e=t:option(Value,"url",translate("规则地址"))
-e.width="55%"
-e.rmempty=false
-e.placeholder="[https|http|ftp]://[Hostname]/[File]"
-function e.validate(self, value)
-	if not value then
-		return nil
-	else
-		return value
+t.extedit=luci.dispatcher.build_url("admin/services/koolproxy/rss_rule/%s")
+
+t.create=function(...)
+	local sid=TypedSection.create(...)
+	if sid then
+		luci.http.redirect(t.extedit % sid)
+		return
 	end
 end
-e=t:option(DummyValue,"time",translate("更新时间"))
-e.width="15%"
+
 e=t:option(Flag,"load",translate("启用"))
-e.width="10%"
 e.default=0
 e.rmempty=false
---]]
+
+e=t:option(DummyValue,"name",translate("规则名称"))
+function e.cfgvalue(...)
+	return Value.cfgvalue(...) or translate("None")
+end
+
+e=t:option(DummyValue,"url",translate("规则地址"))
+function e.cfgvalue(...)
+	return Value.cfgvalue(...) or translate("None")
+end
+
+e=t:option(DummyValue,"time",translate("更新时间"))
 
 function Download()
 	local t,e
