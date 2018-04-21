@@ -101,17 +101,6 @@ load_config() {
 	return 1
 }
 
-add_dnsmasq() {
-	adblockenable=$(config_t_get global adblock 0)
-	if [ ! -f "/tmp/dnsmasq.d/dnsmasq.adblock" -a "$adblockenable" == "1" ];then
-		ln -s /usr/share/koolproxy/dnsmasq.adblock /tmp/dnsmasq.d/dnsmasq.adblock
-	fi
-	if [ ! -f "/tmp/dnsmasq.d/adblock.conf" ];then
-		ln -s /usr/share/koolproxy/adblock.conf /tmp/dnsmasq.d/adblock.conf
-		/etc/init.d/dnsmasq restart
-	fi
-}
-
 gen_ca() {
 	if [ ! -f "/usr/share/koolproxy/data/certs/ca.crt" ]||[ ! -f "/usr/share/koolproxy/data/private/ca.key.pem" ];then
 		rm -rf /usr/share/koolproxy/data/private
@@ -120,10 +109,27 @@ gen_ca() {
 	fi
 }
 
-stop_dnsmasq() {
+add_dns() {
+	adblockenable=$(config_t_get global adblock 0)
+	restart_dns=0
+	if [ ! -f "/tmp/dnsmasq.d/dnsmasq.adblock" -a "$adblockenable" == "1" ];then
+		ln -s /usr/share/koolproxy/dnsmasq.adblock /tmp/dnsmasq.d/dnsmasq.adblock
+		restart_dns=1
+	fi
+	if [ ! -f "/tmp/dnsmasq.d/adblock.conf" ];then
+		ln -s /usr/share/koolproxy/adblock.conf /tmp/dnsmasq.d/adblock.conf
+		restart_dns=1
+	fi
+	if [ $restart_dns -eq 1 ]; then
+		/etc/init.d/dnsmasq restart
+	fi
+}
+
+del_dns() {
 	adenable=$(config_t_get global enabled)
 	if [ "$adenable" == "0" ];then
 		sed -i '/koolproxyupdate/d' /etc/crontabs/root >/dev/null 2>&1
+		rm -f /tmp/dnsmasq.d/dnsmasq.adblock
 		rm /tmp/dnsmasq.d/adblock.conf
 		/etc/init.d/dnsmasq restart
 	fi
@@ -139,7 +145,6 @@ get_action_chain() {
 			;;
 		adblock)
 			echo "KOOLPROXY_ADB"
-			add_dnsmasq
 			;;
 		ahttps)
 			echo "KOOLPROXY_HTTPS_ADB"
@@ -164,7 +169,7 @@ get_jump_mode() {
 	esac
 }
 
-add_koolproxy_cru() {
+add_cru() {
 	time=$(config_t_get global time_update)
 	wirtecron=$(cat /etc/crontabs/root | grep "00 $time * * *" | grep koolproxy)
 	if [ -z "$wirtecron" ];then
@@ -243,7 +248,7 @@ pre_start() {
 	cp $DATA_PATH/user.txt $RULE_PATH/user.txt
 	#加载订阅规则
 	config_foreach load_exrule rss_rule
-	#/usr/share/koolproxy/koolproxy -d >/dev/null 2>&1 &
+	add_dns
 	add_rule
 	add_koolproxy_cru
 	flush_ipt_rules && export_ipt_rules
@@ -255,9 +260,7 @@ post_stop() {
 	del_rule
 	ipset -F adblock
 	ipset -X adblock
-	rm -f /tmp/dnsmasq.d/dnsmasq.adblock
-	#kill -9 $(ps|grep '/usr/share/koolproxy/koolproxy'|grep -v 'grep'|awk '{print$1}')
-	stop_dnsmasq
+	del_dns
 	return 0
 }
 
