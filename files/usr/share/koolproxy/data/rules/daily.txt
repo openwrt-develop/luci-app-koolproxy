@@ -1,18 +1,38 @@
 !x  -----------------------------------------------------------------------------------------------------------------
 !x  -----[KoolProxy Plus 3.7.2]
-!x  -----update[rules]: 2018-2-7 13:31
+!x  -----update[rules]: 2018-4-12 20:20
 !x  -----QQ group: 595300867<1-group> 203726739<2-group> 369773525<3-group>
 !x  -----Thanks: From KP Rule Group -- <houzi-> <Carseason>
 !x  -----Thanks for help: <yiclear> <adbyby>
 !x  -----Tip: Welcome to rule group,Please Send mail to <wojiaolinmu008@gmail.com>
 !x  -----------------------------------------------------------------------------------------------------------------
-|https://www.baidu.com/js/opensug.js
+!|https://www.baidu.com/js/opensug.js
 |http://er66uds.m.qiuwu.net
-|https://s2.zdmimg.com/www/delivery/ajs.php
+|https://s2.zdmimg.com/www/delivery/ajs.php                      
 |http://s2.zdmimg.com/www/delivery/ajs.php
 ||https://googlesyndication.com/pagead/imgad?
 ||https://googlesyndication.com/pagead/js/
-@@|http://img.client.10010.com/SigninApp
+@@|http://resolver.msg.xiaomi.net
+||creaders.net/ad_func.js
+|http://pub.creaders.net/html/site_ad_images/
+|https://sp0.baidu.com/*/.gif?
+||zimuku.cn/images/v2/js/bn*.js
+|https://dm.aizhan.com/tps/noexpire/js/4.0.1/adClosefeedbackUpgrade.min.js
+|https://dm.aizhan.com/bvzdpzs.js
+|https://statics.aizhan.com/jsa/zone.js
+/^http:\/\/vali\.cp31\.ott\.cibntv\.net\/youku\/[0-9,a-f,\/,A-F,-]+\.mp4\?/
+||https://77kp.com/jquery/
+@@|http://js.passport.qihucdn.com/5.0.3.js
+||https://e.lzytt.com/
+|https://ss.sysad.cn
+|https://s13.cnzz.com
+@@|http://p.store.qq.com/photo
+@@|http://share.dmhy.org/common/generate-captcha?code=
+||https://bdstatic.com^*/plugins/every_cookie_
+||km.com/dypcimg/mversion/js/zepto_min.js
+||eastday.com/assets/js/resources/detail/
+||eastday.com/assets/js/resources/new_detail_
+||eastday.com/assets/js/detail_
 !x  -----------------------------------------------------------------------------------------------------------------
 !|https://live.bilibili.com/*$r@/^https:\/\/(.*)/(\d*)/@http://$1/$2@
 !|https://www.bilibili.com/*$r@/^https:\/\/(.*)/(\d*)/@http://$1/$2@
@@ -41,6 +61,13 @@
 |http://t66y.com/htm_data$s@<br /><div class="tpc_content do_not_catch">*</span></span></a><br></blockquote><br><br><br>@<br /><div class="tpc_content do_not_catch">@
 |http://t66y.com/htm_data$s@<br /><div class="tpc_content do_not_catch"><img src='http*.gif' onclick="window.open('*;" style='cursor:pointer'>&nbsp;<br>@<br /><div class="tpc_content do_not_catch">@
 |http://t66y.com/htm_data$s@<br><img src='http*.gif' onclick="window.open('*;" style='cursor:pointer'>&nbsp;<br>@@
+|http://www.creaders.net$s@<table width="1024" border="0" cellspacing="0" cellpadding="0" style="padding:5px 0px;">@<table width="1024" border="0" cellspacing="0" cellpadding="0" style="display:none;">@
+|http://www.creaders.net$s@<table width="1025" border="0" cellspacing="0" cellpadding="0" style="padding:4px 0px;clear:both;">@<table width="1024" border="0" cellspacing="0" cellpadding="0" style="display:none;">@
+|https://www.77kp.com/###adfdiv
+|http://gaoqing.la$s@<script src="http://dspmy.ge95.com:8008/?aspx=1367">var *</script>@@
+|https://www.cnbeta.com/##.trc_rbox.thumbnails-c.trc-content-sponsored
+|http://www.zimuku.cn/$s@<li class="li"  style="width:820px;height:90px;*#eee;">@@
+|http://bbs.pcbeta.com/$s@<style type="text/css">*</style>@<style type="text/css"></style>@
 
 !x  -----------------------------------------------------------------------------------------------------------------
 ||you85./ling/
@@ -93,7 +120,7 @@
 |https://mp.weixin.qq.com/mp/ad_video_report?
 |http://wbapp.uve.weibo.com/wbapplua/
 |https://adimg.uve.weibo.com/public/
-|https://sdkconfig.ad.xiaomi.com/
+!|https://sdkconfig.ad.xiaomi.com/
 @@||cdn-thumb.fds.api.xiaomi.com/b2c-bbs
 |https://scss-prod-ue1-notif-22.adobesc.com/
 ||https://17ce.com/118/
@@ -101,7 +128,6 @@
 @@|http://image.box.xiaomi.com/mfsv2/
 !|https://hm.baidu.com/h
 |https://img.xiacaidd.com/xiacai/ad/t18.js
-|http://ad.
 ||zmzjstu.com/g3/tool
 |http://files.zmzjstu.com/g3/ad-cp
 |https://www.80s.tw/80sad/fumeiti.js
@@ -116,6 +142,7 @@
 |http://www.wancai.com
 |https://gg.kkcaicai.com/$image
 |https://h5.m.youku.com/ju/xcgj.html?
+||https://qidian.com/ejs/qd/js/index/bannerTop.
 !x  -----------------------------------------------------------------------------------------------------------------
 !|https://pan.baidu.com,yun.baidu.com##[id^="share-ad-"],A#share_ad_info_panl,div[id^="cpro_"],img.share-center,.ad-platform-tips,.banner-active
 jb51.net##.logom.fl,#txtlink,.logor.fr,.blank6,.topimg
@@ -130,5 +157,30 @@ cnbtkitty.com##img[src^="http://go.gotourl.xyz/"]
 |https://www.ithome.com##[class^="rm-modal"]
 zimuzu.tv##DIV.middle-box:nth-child(2) > DIV.w.subtitle-box > DIV.area-left.fl:nth-child(2) > DIV:nth-child(2) > A > IMG
 100pd.cc###qiqi_cpv_adsiframe
+tiexue.net##.AreaR > .lunbo
+tiexue.net##.ad_xuanfu
+m.tiexue.net##.blue
+tiexue.net##.goushi
+tiexue.net##.gousi
+tiexue.net##.jiangWuTang + .mTop10
+www.tiexue.net##.main > style + div[class]
+tiexue.net##.moveBox
+tiexue.net##.qrcode
+tiexue.net##.reloadCont > div:first-child
+m.tiexue.net##.threeImg.titleUp
+tiexue.net##.wangpadan
+tiexue.net##.xiaqi
+tiexue.net##[id*="junph"]
+tiexue.net##[class*="junph"]
+tiexue.net##a[href*=".junph."]
+tiexue.net##a[href*=".liangada."]
+tiexue.net##a[href*="game.tiexue."]
+tiexue.net##a[href*=".yueleyu."]
+tiexue.net##div[id^="Baidu_"]
+tiexue.net##div[style$="top:40px;overflow: hidden;position: fixed;"]
+tiexue.net##div[style*="overflow: hidden; position: fixed;"]
+www.tiexue.net##style + p + div[class]
+tiexue.net##style + script + div + div[class]
+|http://www.creaders.net##.ads_pic
 
 !x  -----------------------------------------------------------------------------------------------------------------
