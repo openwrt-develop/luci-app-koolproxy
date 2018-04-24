@@ -42,6 +42,7 @@ define Package/luci-app-koolproxy/install
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DIR) $(1)/etc/adblocklist
 	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/lib/upgrade/keep.d
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/controller
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/model/cbi/koolproxy
@@ -57,13 +58,13 @@ define Package/luci-app-koolproxy/install
 	$(INSTALL_BIN) ./files/etc/init.d/* $(1)/etc/init.d/
 	$(INSTALL_DATA) ./files/etc/config/* $(1)/etc/config/
 	$(INSTALL_DATA) ./files/etc/adblocklist/* $(1)/etc/adblocklist/
+	$(INSTALL_DATA) ./files/lib/upgrade/keep.d/koolproxy $(1)/lib/upgrade/keep.d/
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/model/cbi/koolproxy/global.lua $(1)/usr/lib/lua/luci/model/cbi/koolproxy/global.lua
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/model/cbi/koolproxy/rss_rule.lua $(1)/usr/lib/lua/luci/model/cbi/koolproxy/rss_rule.lua
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/controller/koolproxy.lua $(1)/usr/lib/lua/luci/controller/koolproxy.lua
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/view/koolproxy/* $(1)/usr/lib/lua/luci/view/koolproxy/
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/i18n/koolproxy.zh-cn.lmo $(1)/usr/lib/lua/luci/i18n/koolproxy.zh-cn.lmo
 	$(INSTALL_BIN) ./files/usr/sbin/* $(1)/usr/sbin/
-	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/certs/* $(1)/usr/share/koolproxy/data/certs
 	$(INSTALL_BIN) ./files/usr/share/koolproxy/data/gen_ca.sh $(1)/usr/share/koolproxy/data/
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/openssl.cnf $(1)/usr/share/koolproxy/data/
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/user.txt $(1)/usr/share/koolproxy/data/
