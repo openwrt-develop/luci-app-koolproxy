@@ -10,6 +10,8 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_BUILD_PARALLEL:=1
 
+RSTRIP:=true
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/luci-app-koolproxy
@@ -51,7 +53,6 @@ define Package/luci-app-koolproxy/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_DIR) $(1)/usr/share/koolproxy
 	$(INSTALL_DIR) $(1)/usr/share/koolproxy/data
-	$(INSTALL_DIR) $(1)/usr/share/koolproxy/data/certs/
 	$(INSTALL_DIR) $(1)/usr/share/koolproxy/data/rules/
 
 	$(INSTALL_BIN) ./files/etc/uci-defaults/luci-koolproxy $(1)/etc/uci-defaults/luci-koolproxy
@@ -70,8 +71,7 @@ define Package/luci-app-koolproxy/install
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/user.txt $(1)/usr/share/koolproxy/data/
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/data/rules/* $(1)/usr/share/koolproxy/data/rules/
 	$(INSTALL_BIN) ./files/usr/share/koolproxy/camanagement $(1)/usr/share/koolproxy/camanagement
-	$(INSTALL_BIN) ./files/usr/share/koolproxy/firewall.include $(1)/usr/share/koolproxy/firewall.include
-	$(INSTALL_BIN) ./files/usr/share/koolproxy/koolproxyupdate $(1)/usr/share/koolproxy/koolproxyupdate
+	$(INSTALL_BIN) ./files/usr/share/koolproxy/kpupdate $(1)/usr/share/koolproxy/kpupdate
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/adblock.conf $(1)/usr/share/koolproxy/adblock.conf
 	$(INSTALL_DATA) ./files/usr/share/koolproxy/dnsmasq.adblock $(1)/usr/share/koolproxy/dnsmasq.adblock
 ifeq ($(ARCH),mipsel)

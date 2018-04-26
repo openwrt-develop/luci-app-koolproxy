@@ -24,7 +24,6 @@ local function get_status(name)
 end
 
 o=Map(r,translate("koolproxy"),translate("A powerful advertisement blocker. <br /><font color=\"red\">Adblock Plus Host list + koolproxy Blacklist mode runs without loss of bandwidth due to performance issues.<br /></font>"))
---o.template="koolproxy/index"
 t=o:section(TypedSection,"global",translate("Running Status"))
 t.anonymous=true
 e=t:option(DummyValue,"_status",translate("Transparent Proxy"))
@@ -32,16 +31,19 @@ e.value=get_status("koolproxy")
 t=o:section(TypedSection,"global",translate("Global Setting"))
 t.anonymous=true
 t.addremove=false
+
 t:tab("base",translate("Basic Settings"))
 t:tab("cert",translate("Certificate Management"))
 t:tab("weblist",translate("Set Backlist Of Websites"))
 t:tab("iplist",translate("Set Backlist Of IP"))
 t:tab("customlist",translate("Set Backlist Of custom"))
 t:tab("logs",translate("View the logs"))
-e=t:taboption("base",Flag,"enabled",translate("Enable"))
-e.default=0
-e.rmempty=false
-e=t:taboption("base",Value, "startup_delay", translate("Startup Delay"))
+
+e = t:taboption("base", Flag, "enabled", translate("Enable"))
+e.default = 0
+e.rmempty = false
+
+e = t:taboption("base", Value, "startup_delay", translate("Startup Delay"))
 e:value(0, translate("Not enabled"))
 for _, v in ipairs({5, 10, 15, 25, 40}) do
 	e:value(v, translate("%u seconds") %{v})
@@ -49,44 +51,41 @@ end
 e.datatype = "uinteger"
 e.default = 0
 e.rmempty = false
-e=t:taboption("base",ListValue,"filter_mode",translate('Default')..translate("Filter Mode"))
-e.default="adblock"
-e.rmempty=false
-e:value("disable",translate("No Filter"))
-e:value("global",translate("Global Filter"))
-e:value("adblock",translate("AdBlock Filter"))
-e=t:taboption("base",Flag,"video_mode",translate("视频模式"))
-e.default=0
-e.description=translate("只加载视频规则")
-e=t:taboption("base",Flag,"adblock",translate("Open adblock"))
-e.default=0
-e:depends("filter_mode","adblock")
-e=t:taboption("base",ListValue,"time_update",translate("Timing update rules"))
-for t=0,23 do
+
+e=t:taboption("base", ListValue, "koolproxy_mode", translate("Filter Mode"))
+e.default = 1
+e.rmempty = false
+e:value(1, translate("全局模式"))
+e:value(2, translate("IPSET模式"))
+e:value(3, translate("视频模式"))
+
+e=t:taboption("base", ListValue, "koolproxy_acl_default", translate("访问控制默认规则"))
+e.default = 1
+e.rmempty = false
+e:value(0,translate("不过滤"))
+e:value(1,translate("http only"))
+e:value(2,translate("http + https"))
+e:value(3,translate("full port"))
+
+
+e = t:taboption("base", Flag, "koolproxy_host", translate("开启Adblock Plus Host"))
+e.default = 0
+e:depends("koolproxy_mode", "2")
+
+e = t:taboption("base", ListValue, "time_update", translate("Timing update rules"))
+for t = 0,23 do
 	e:value(t,translate("每天"..t.."点"))
 end
-e.default=0
-e.rmempty=false
-restart=t:taboption("base",Button,"restart",translate("Manually update the koolproxy rule"))
-restart.inputtitle=translate("Update manually")
-restart.inputstyle="reload"
-restart.write=function()
-	--luci.sys.call("/usr/share/koolproxy/koolproxyupdate rules 2>&1 >/dev/null")
-	luci.sys.call("/usr/share/koolproxy/koolproxyupdate 2>&1 >/dev/null")
-	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
-end
+e.default = 0
+e.rmempty = false
 
---[[
-update=t:taboption("base",Button,"update",translate("程序更新"))
-update.inputtitle=translate("Update manually")
-update.inputstyle="reload"
-update.description=translate(string.format("程序版本：%s", v))
-update.inputstyle="reload"
-update.write=function()
-	luci.sys.call("/usr/share/koolproxy/koolproxyupdate binary 2>&1 >/dev/null")
+restart = t:taboption("base", Button, "restart", translate("更新规则"))
+restart.inputtitle = translate("点击更新")
+restart.inputstyle = "reload"
+restart.write = function()
+	luci.sys.call("/usr/share/koolproxy/kpupdate 2>&1 >/dev/null")
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
---]]
 
 e=t:taboption("base",DummyValue,"status0",translate("程序版本"))
 e.value=string.format("[ %s ]", v)
@@ -98,6 +97,7 @@ e=t:taboption("base",DummyValue,"status3",translate("自定规则"))
 e.value=string.format("[ %s]", h)
 e=t:taboption("base",DummyValue,"status4",translate("Host规则"))
 e.value=string.format("[ %s]", i)
+
 e=t:taboption("cert",DummyValue,"c1status",translate("<div align=\"left\">Certificate Restore</div>"))
 e=t:taboption("cert",FileUpload,"")
 e.template="koolproxy/caupload"
@@ -162,6 +162,7 @@ e.cfgvalue=function(t,t)
 end
 e.write=function(e,e,e)
 end
+
 t=o:section(TypedSection,"acl_rule",translate("koolproxy ACLs"),
 translate("ACLs is a tools which used to designate specific IP filter mode,The MAC addresses added to the list will be filtered using https"))
 t.template="cbi/tblsection"
@@ -187,17 +188,16 @@ luci.ip.neighbors({family = 4}, function(neighbor)
 		e:value(neighbor.mac, "%s (%s)" %{neighbor.mac, neighbor.dest:string()})
 	end
 end)
-e=t:option(ListValue,"filter_mode",translate("Filter Mode"))
+e=t:option(ListValue,"proxy_mode",translate("访问控制"))
 e.width="20%"
-e.default="disable"
+e.default=1
 e.rmempty=false
-e:value("disable",translate("No Filter"))
-e:value("global",translate("Global Filter"))
-e:value("adblock",translate("AdBlock Filter"))
-e:value("ghttps",translate("Global Https Filter"))
-e:value("ahttps",translate("AdBlock Https Filter"))
+e:value(0,translate("不过滤"))
+e:value(1,translate("http only"))
+e:value(2,translate("http + https"))
+e:value(3,translate("full port"))
 
-t=o:section(TypedSection,"rss_rule",translate("koolproxy 规则订阅"), translate("请确保Koolproxy兼容规则"))
+t=o:section(TypedSection,"rss_rule",translate("koolproxy 规则订阅"), translate("请确保订阅规则的兼容性"))
 t.anonymous=true
 t.addremove=true
 t.sortable=true
