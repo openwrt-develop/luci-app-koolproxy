@@ -36,8 +36,16 @@ add_ipset_conf() {
 		fi
 
 		echo_date 添加黑名单软连接...
-		rm -rf /tmp/dnsmasq.d/adblock.conf
-		ln -sf $KP_DIR/adblock.conf /tmp/dnsmasq.d/adblock.conf
+		rm -rf /tmp/dnsmasq.d/koolproxy_ipset.conf
+		ln -sf $KP_DIR/koolproxy_ipset.conf /tmp/dnsmasq.d/koolproxy_ipset.conf
+
+		echo_date 添加自定义黑名单软连接...
+		if [ -s /etc/adblocklist/adblock ]; then
+			cat /etc/adblocklist/adblock | sed "s/,/\n/g" | sed "s/^/ipset=&\/./g" | sed "s/$/\/black_koolproxy/g"  >> /tmp/adblock.conf
+			rm -rf /tmp/dnsmasq.d/adblock.conf
+			ln -sf /tmp/adblock.conf /tmp/dnsmasq.d/adblock.conf
+		fi
+
 		dnsmasq_restart=1
 	fi
 }
@@ -46,6 +54,12 @@ remove_ipset_conf() {
 	if [ -L "/tmp/dnsmasq.d/koolproxy_ipset.conf" ]; then
 		echo_date 移除黑名单软连接...
 		rm -rf /tmp/dnsmasq.d/koolproxy_ipset.conf
+	fi
+
+	if [ -L "/tmp/dnsmasq.d/adblock.conf" ]; then
+		echo_date 移除自定义黑名单软连接...
+		rm -rf /tmp/dnsmasq.d/adblock.conf
+		rm -rf /tmp/adblock.conf
 	fi
 
 	if [ -L "/tmp/dnsmasq.d/dnsmasq.adblock" ]; then
@@ -67,6 +81,7 @@ creat_ipset() {
 	# Load ipset netfilter kernel modules and kernel modules
 	ipset -! create white_kp_list nethash
 	ipset -! create black_koolproxy iphash
+	cat $KP_DIR/data/rules/koolproxy.txt $KP_DIR/data/rules/daily.txt $KP_DIR/data/rules/user.txt | grep -Eo "(.\w+\:[1-9][0-9]{1,4})/" | grep -Eo "([0-9]{1,5})" | sort -un | sed -e '$a\80' -e '$a\443' | sed -e "s/^/-A kp_full_port &/g" -e "1 i\-N kp_full_port bitmap:port range 0-65535 " | ipset -R -!
 }
 
 add_white_black_ip() {
@@ -87,17 +102,19 @@ load_config() {
 	koolproxy_mode=$(config_t_get global koolproxy_mode 1)
 	koolproxy_host=$(config_t_get global koolproxy_host 0)
 	koolproxy_acl_default=$(config_t_get global koolproxy_acl_default 1)
+	koolproxy_port=$(config_t_get global koolproxy_port 0)
+	koolproxy_bp_port=$(config_t_get global koolproxy_bp_port)
 	config_load $CONFIG
 	return 1
 }
 
 __load_lan_acl() {
 	local mac
-	local ip
-	local mode
+	local ipaddr
+	local proxy_mode
 	config_get mac $1 mac
 	config_get ipaddr $1 ipaddr
-	config_get mode $1 proxy_mode
+	config_get proxy_mode $1 proxy_mode
 	[ -n "$ipaddr" ] && [ -z "$mac" ] && echo_date 加载ACL规则：【$ipaddr】模式为：$(get_mode_name $proxy_mode)
 	[ -z "$ipaddr" ] && [ -n "$mac" ] && echo_date 加载ACL规则：【$mac】模式为：$(get_mode_name $proxy_mode)
 	[ -n "$ipaddr" ] && [ -n "$mac" ] && echo_date 加载ACL规则：【$ipaddr】【$mac】模式为：$(get_mode_name $proxy_mode)
@@ -220,13 +237,24 @@ load_nat() {
 	iptables -t nat -N KOOLPROXY
 	# 局域网地址不走KP
 	iptables -t nat -A KOOLPROXY -m set --match-set white_kp_list dst -j RETURN
-	#  生成对应CHAIN
+	# 生成对应CHAIN
 	iptables -t nat -N KP_HTTP
 	iptables -t nat -A KP_HTTP -p tcp -m multiport --dport 80 -j REDIRECT --to-ports 3000
 	iptables -t nat -N KP_HTTPS
 	iptables -t nat -A KP_HTTPS -p tcp -m multiport --dport 80,443 -j REDIRECT --to-ports 3000
 	iptables -t nat -N KP_ALL_PORT
-	iptables -t nat -A KP_ALL_PORT -p tcp -j REDIRECT --to-ports 3000
+	#iptables -t nat -A KP_ALL_PORT -p tcp -j REDIRECT --to-ports 3000
+	# 端口控制
+	if [ "$koolproxy_port" == "1" ]; then
+		echo_date 开启端口控制：【$koolproxy_bp_port】
+		if [ -n "$koolproxy_bp_port" ]; then
+			iptables -t nat -A KP_ALL_PORT -p tcp -m multiport ! --dport $koolproxy_bp_port -m set --match-set kp_full_port dst -j REDIRECT --to-ports 3000
+		else
+			iptables -t nat -A KP_ALL_PORT -p tcp -m set --match-set kp_full_port dst -j REDIRECT --to-ports 3000
+		fi
+	else
+		iptables -t nat -A KP_ALL_PORT -p tcp -m set --match-set kp_full_port dst -j REDIRECT --to-ports 3000
+	fi
 	# 局域网控制
 	lan_acess_control
 	# 剩余流量转发到缺省规则定义的链中
@@ -317,7 +345,7 @@ post_stop() {
 }
 
 start_service() {
-	echo_date ================== koolproxy启用 =================
+	echo_date ================== koolproxy启用 ================
 	pre_start
 	[ $? -ne 1 ] && exit 0
 
@@ -341,7 +369,7 @@ start_service() {
 }
 
 stop_service() {
-	echo_date ================== 关闭 =================
+	echo_date ====================== 关闭 =====================
 	post_stop
 	logger "koolproxy has stopped."
 	echo_date =================================================
