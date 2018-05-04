@@ -57,16 +57,7 @@ e:value(1, translate("开启"))
 
 e = t:taboption("base", Value, "koolproxy_bp_port", translate("例外端口"))
 e:depends("koolproxy_port", "1")
-e.rmempty = true
---[[
-function e.validate(self, value)
-	if not value then
-		return nil
-	else
-		return value
-	end
-end
-]]
+e.rmempty = false
 e.description = translate(string.format("<font color=\"red\"><strong>单端口:80&nbsp;&nbsp;多端口:80,443</strong></font>"))
 
 e=t:taboption("base",Flag,"koolproxy_host",translate("开启Adblock Plus Host"))
