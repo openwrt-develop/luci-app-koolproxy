@@ -297,7 +297,7 @@ end
 local t,e
 t="/tmp/upload/"
 nixio.fs.mkdir(t)
-d.setfilehandler(
+luci.http.setfilehandler(
 function(o,a,i)
 	if not e then
 		if not o then return end
