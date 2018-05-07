@@ -54,17 +54,20 @@ remove_ipset_conf() {
 	if [ -L "/tmp/dnsmasq.d/koolproxy_ipset.conf" ]; then
 		echo_date 移除黑名单软连接...
 		rm -rf /tmp/dnsmasq.d/koolproxy_ipset.conf
+		dnsmasq_restart=1
 	fi
 
 	if [ -L "/tmp/dnsmasq.d/adblock.conf" ]; then
 		echo_date 移除自定义黑名单软连接...
 		rm -rf /tmp/dnsmasq.d/adblock.conf
 		rm -rf /tmp/adblock.conf
+		dnsmasq_restart=1
 	fi
 
 	if [ -L "/tmp/dnsmasq.d/dnsmasq.adblock" ]; then
 		echo_date 移除Adblock Plus Host软连接...
 		rm -rf /tmp/dnsmasq.d/dnsmasq.adblock
+		dnsmasq_restart=1
 	fi
 }
 
