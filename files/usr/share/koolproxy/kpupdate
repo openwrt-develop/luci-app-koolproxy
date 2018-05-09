@@ -90,19 +90,19 @@ __update_rule() {
 		if [ $enable -ne 1 ]; then
 			return
 		fi
-		__compare_file "$name" "$KP_DIR/data/rule/$file" "$exrule"
+		__compare_file "$name" "$KP_DIR/data/rules/$file" "$exrule"
 		if [ "$?" == "0" ]; then
 			uci set koolproxy.$1.time="`date +%Y-%m-%d" "%H:%M`"
 			uci commit koolproxy
 			RESTART_KOOLPROXY=true
 		fi
-		cat $KP_DIR/data/rule/$file >>$KP_DIR/data/rule/user.txt
+		cat $KP_DIR/data/rules/$file >>$KP_DIR/data/rules/user.txt
 		echo >>$LOGFILE
 	fi
 }
 
 update_rss_rules() {
-	cp $KP_DIR/data/user.txt $KP_DIR/data/rule/user.txt
+	cp $KP_DIR/data/user.txt $KP_DIR/data/rules/user.txt
 	config_load $CONFIG
 	config_foreach __update_rule rss_rule
 }

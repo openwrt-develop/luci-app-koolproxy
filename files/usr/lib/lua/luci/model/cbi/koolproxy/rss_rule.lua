@@ -15,6 +15,10 @@ s = m:section(NamedSection, sid, "rss_rule")
 s.anonymous = true
 s.addremove = true
 
+o=s:option(Flag,"load",translate("启用"))
+o.default=0
+o.rmempty=false
+
 o=s:option(Value,"name",translate("规则描述"))
 o.rmempty=true
 
