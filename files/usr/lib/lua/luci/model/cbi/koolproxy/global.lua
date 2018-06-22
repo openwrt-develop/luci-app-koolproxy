@@ -308,7 +308,7 @@ function(o,a,i)
 end
 )
 
-function m.on_after_commit(self,map)
+function o.on_after_commit(self,map)
 	require("luci.sys").call('/etc/init.d/koolproxy reload')
 end
 
