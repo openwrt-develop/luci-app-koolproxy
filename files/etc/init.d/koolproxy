@@ -306,9 +306,9 @@ export_ipt_rules() {
 	FWI=$(uci get firewall.koolproxy.path 2>/dev/null)
 	[ -n "$FWI" ] || return 0
 	cat <<-CAT >>$FWI
-	iptables-save -c | grep -v "KOOLPROXY" | iptables-restore -c
+	iptables-save -c | grep -v -E "KOOLPROXY|KP" | iptables-restore -c
 	iptables-restore -n <<-EOF
-	$(iptables-save | grep -E "KOOLPROXY|^\*|^COMMIT" |\
+	$(iptables-save | grep -E "KOOLPROXY|KP|^\*|^COMMIT" |\
 		sed -e "s/^-A \(PREROUTING\)/-I \1 1/")
 	EOF
 	CAT
