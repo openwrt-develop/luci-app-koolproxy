@@ -23,11 +23,11 @@ fi
 }
 restore() {
 if [ ! -f /tmp/upload/koolproxyCA.tar.gz ]; then
-		echo "未找到备份文件，文件名必须为koolproxyCA.tar.gz或已损坏，请检查备份文件！" >> $kplogfile
+	echo "未找到备份文件，文件名必须为koolproxyCA.tar.gz或已损坏，请检查备份文件！" >> $kplogfile
 else
-		mkdir -p $readyfolder
-		cd $readyfolder
-		tar xzf /tmp/upload/koolproxyCA.tar.gz
+	mkdir -p $readyfolder
+	cd $readyfolder
+	tar xzf /tmp/upload/koolproxyCA.tar.gz
 fi
 if [ ! -f $readyfolder/private/ca.key.pem ]; then
 	echo "未找到ca.key.pem,备份文件不正确或已损坏，请检查备份文件！" > $kplogfile
@@ -51,14 +51,14 @@ fi
  	/etc/init.d/koolproxy restart
 }
 
-case "$*" in 
-  "backup") 
+case "$*" in
+  "backup")
     backup
-  ;; 
-  "restore") 
+  ;;
+  "restore")
     restore
-  ;; 
-  "help") 
+  ;;
+  "help")
     echo "use backup or restore"
-  ;; 
-esac 
+  ;;
+esac
