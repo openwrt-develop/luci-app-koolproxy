@@ -133,7 +133,7 @@ fi
 if [ $RESTART_KOOLPROXY ]; then
 	restart_koolproxy
 	echo $(date "+%F %T"): 重启koolproxy进程 >>$LOGFILE
-else [ $RESTART_DNSMASQ ]; then
+elif [ $RESTART_DNSMASQ ]; then
 	echo $(date "+%F %T"): 重启dnsmasq进程 >>$LOGFILE
 	/etc/init.d/dnsmasq restart > /dev/null 2>&1
 fi
