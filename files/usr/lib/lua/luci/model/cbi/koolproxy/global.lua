@@ -47,7 +47,15 @@ e.default = 1
 e.rmempty = false
 e:value(1, translate("全局模式"))
 e:value(2, translate("IPSET模式"))
-e:value(3, translate("视频模式"))
+--e:value(3, translate("视频模式"))
+
+e = t:taboption("base", MultiValue, "koolproxy_rules", translate("内置规则"))
+e.optional = false
+e.rmempty = false
+e:value("koolproxy.txt", translate("静态规则"))
+e:value("daily.txt", translate("每日规则"))
+e:value("kp.dat", translate("视频规则"))
+e:value("user.txt", translate("自定规则"))
 
 e = t:taboption("base", ListValue, "koolproxy_port", translate("端口控制"))
 e.default = 0
@@ -65,7 +73,7 @@ e.default=0
 e:depends("koolproxy_mode","2")
 
 
-e = t:taboption("base", ListValue, "koolproxy_acl_default", translate("默认规则"))
+e = t:taboption("base", ListValue, "koolproxy_acl_default", translate("默认访问控制"))
 e.default = 1
 e.rmempty = false
 e:value(0, translate("不过滤"))

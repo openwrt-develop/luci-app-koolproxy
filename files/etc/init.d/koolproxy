@@ -179,6 +179,38 @@ gen_user_rule() {
 	config_foreach __load_exrule rss_rule
 }
 
+config_inner_rule() {
+	local enable_koolproxy=0
+	local enable_daily=0
+	local enable_kp=0
+	local enable_user=0
+
+	local rulelist="$(uci -q get koolproxy.@global[0].koolproxy_rules)"
+	for rule in $rulelist
+	do
+		case "$rule" in
+			koolproxy.txt)
+				enable_koolproxy=1
+			;;
+			daily.txt)
+				enable_daily=1
+			;;
+			kp.dat)
+				enable_kp=1
+			;;
+			user.txt)
+				enable_user=1
+			;;
+		esac
+	done
+	cat <<-EOF > $KP_DIR/data/source.list
+$enable_koolproxy|koolproxy.txt|https://kprule.com/koolproxy.txt|
+$enable_daily|daily.txt|https://kprule.com/daily.txt|
+$enable_kp|kp.dat|https://kprule.com/kp.dat|
+$enable_user|user.txt||
+EOF
+}
+
 get_mode_name() {
 	case "$1" in
 		0)
@@ -326,6 +358,7 @@ pre_start() {
 	[ $? -ne 1 ] && return 0
 	iptables -t nat -C PREROUTING -p tcp -j KOOLPROXY 2>/dev/null && [ $? -eq 0 ] && return 0;
 	detect_cert
+	config_inner_rule
 	gen_user_rule
 	add_ipset_conf && restart_dnsmasq
 	creat_ipset
