@@ -29,6 +29,15 @@ config_t_get() {
 }
 
 add_ipset_conf() {
+	if [ -s /etc/adblocklist/adbypass ]; then
+		echo_date 添加白名单软连接...
+		cat /etc/adblocklist/adbypass | sed "s/,/\n/g" | sed "s/^/ipset=&\/./g" | sed "s/$/\/white_kp_list/g"  >> /tmp/adbypass.conf
+		rm -rf /tmp/dnsmasq.d/adbypass.conf
+		ln -sf /tmp/adbypass.conf /tmp/dnsmasq.d/adbypass.conf
+
+		dnsmasq_restart=1
+	fi
+
 	if [ "$koolproxy_mode" == "2" ]; then
 		if [ "$koolproxy_host" == "1" ];then
 			echo_date 添加Adblock Plus Host软连接...
@@ -51,6 +60,13 @@ add_ipset_conf() {
 }
 
 remove_ipset_conf() {
+	if [ -L "/tmp/dnsmasq.d/adbypass.conf" ]; then
+		echo_date 移除白名单软连接...
+		rm -rf /tmp/adbypass.conf
+		rm -rf /tmp/dnsmasq.d/adbypass.conf
+		dnsmasq_restart=1
+	fi
+
 	if [ -L "/tmp/dnsmasq.d/koolproxy_ipset.conf" ]; then
 		echo_date 移除黑名单软连接...
 		rm -rf /tmp/dnsmasq.d/koolproxy_ipset.conf
@@ -95,6 +111,7 @@ add_white_black_ip() {
 		ipset -A white_kp_list $ip >/dev/null 2>&1
 
 	done
+	sed -e "s/^/add white_kp_list &/g" /etc/adblocklist/adbypassip | awk '{print $0} END{print "COMMIT"}' | ipset -R 2>/dev/null
 	ipset -A black_koolproxy 110.110.110.110 >/dev/null 2>&1
 	sed -e "s/^/add black_koolproxy &/g" /etc/adblocklist/adblockip | awk '{print $0} END{print "COMMIT"}' | ipset -R 2>/dev/null
 }

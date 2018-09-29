@@ -112,7 +112,6 @@ update_adb_host() {
 	if [ "$?" == "0" ]; then
 		RESTART_DNSMASQ=true
 	fi
-	echo >>$LOGFILE
 }
 
 # main process
@@ -133,9 +132,6 @@ fi
 if [ $RESTART_KOOLPROXY ]; then
 	restart_koolproxy
 	echo $(date "+%F %T"): 重启koolproxy进程 >>$LOGFILE
-elif [ $RESTART_DNSMASQ ]; then
-	echo $(date "+%F %T"): 重启dnsmasq进程 >>$LOGFILE
-	/etc/init.d/dnsmasq restart > /dev/null 2>&1
 fi
 
 init_env

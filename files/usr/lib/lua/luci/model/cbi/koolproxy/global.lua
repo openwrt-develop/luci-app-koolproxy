@@ -131,6 +131,32 @@ if nixio.fs.access("/usr/share/koolproxy/data/certs/ca.crt")then
 	end
 end
 
+t:tab("white_weblist",translate("网站白名单设置"))
+
+local i = "/etc/adblocklist/adbypass"
+e = t:taboption("white_weblist", TextValue, "adbypass_domain")
+e.description = translate("These had been joined websites will not usefilter.Please input the domain names of websites,every line can input only one website domain.For example,google.com.")
+e.rows = 28
+e.wrap = "off"
+e.rmempty = false
+
+function e.cfgvalue()
+	return fs.readfile(i) or ""
+end
+
+function e.write(self, section, value)
+	if value then
+		value = value:gsub("\r\n", "\n")
+	else
+		value = ""
+	end
+	fs.writefile("/tmp/adbypass", value)
+	if (luci.sys.call("cmp -s /tmp/adbypass /etc/adblocklist/adbypass") == 1) then
+		fs.writefile(i, value)
+	end
+	fs.remove("/tmp/adbypass")
+end
+
 t:tab("weblist",translate("Set Backlist Of Websites"))
 
 local i = "/etc/adblocklist/adblock"
@@ -157,11 +183,37 @@ function e.write(self, section, value)
 	fs.remove("/tmp/adblock")
 end
 
-t:tab("iplist",translate("Set Backlist Of IP"))
+t:tab("white_iplist",translate("IP白名单设置"))
+
+local i = "/etc/adblocklist/adbypassip"
+e = t:taboption("white_iplist", TextValue, "adbypass_ip")
+e.description = translate("These had been joined ip addresses will use proxy, but only GFW model.Please input the ip address or ip address segment,every line can input only one ip address.For example,112.123.134.145/24 or 112.123.134.145.")
+e.rows = 28
+e.wrap = "off"
+e.rmempty = false
+
+function e.cfgvalue()
+	return fs.readfile(i) or ""
+end
+
+function e.write(self, section, value)
+	if value then
+		value = value:gsub("\r\n", "\n")
+	else
+		value = ""
+	end
+	fs.writefile("/tmp/adbypassip", value)
+	if (luci.sys.call("cmp -s /tmp/adbypassip /etc/adblocklist/adbypassip") == 1) then
+		fs.writefile(i, value)
+	end
+	fs.remove("/tmp/adbypassip")
+end
+
+t:tab("iplist",translate("IP黑名单设置"))
 
 local i = "/etc/adblocklist/adblockip"
 e = t:taboption("iplist", TextValue, "adblock_ip")
-e.description = translate("These had been joined ip addresses will use proxy,but only GFW model.Please input the ip address or ip address segment,every line can input only one ip address.For example,112.123.134.145/24 or 112.123.134.145.")
+e.description = translate("These had been joined ip addresses will not use filter.Please input the ip address or ip address segment,every line can input only one ip address.For example,112.123.134.145/24 or 112.123.134.145.")
 e.rows = 28
 e.wrap = "off"
 e.rmempty = false
