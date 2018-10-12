@@ -1,5 +1,5 @@
 !x  -----------------------------------------------------------------------------------------------------------------
-!x  -----[KoolProxy 3.8.2]
+!x  -----[KoolProxy 3.8.4]
 !x  -----Thanks: From lvba Group
 !x  -----Thanks for help: <yiclear> <adbyby>
 !x  -----------------------------------------------------------------------------------------------------------------
@@ -7,62 +7,7 @@
 !x  -----------------------------------------------------------------------------------------------------------------
 !|https://pan.baidu.com,yun.baidu.com##[id^="share-ad-"],A#share_ad_info_panl,div[id^="cpro_"],img.share-center,.ad-platform-tips,.banner-active
 !x  -----------------------------------------------------------------------------------------------------------------
-0573ren.com##[src^="http://s1.0573fang.com/upimg/ads/"],.weblistad,.a_pb,.w1000.ad
-0597kk.com##[height="70"]
-0830bbs.com##[id^="comiis_xizi_gg"],.comiis_toubox_gg
-12306cctv.com##.adv
-1905.com##.zx-pic,.zx-small-pic,.adArea,#ad360
-1haza.com##.banner,.height60,.popup,.banner2
-5200xs.org##.adsbygoogle
-bitauto.com##.best-car,.buy2018-freetax,.ad-tag2
-downsx.com##.adbox,.Left-ad3_fixed,.google-ad2_fixed
-f-fans.club###carouselExampleIndicators
-fanjian.net##.bkgd-topapps,.gd
-ikaka.com##.ad_textlink1
-jxcn.cn##[class^="mediav-"],.dsp_yxxf
-panda.tv##.room-banner-images
-rjno1.com###m560,.rjnocheck
-shixunwan.cn##[class^="adSpace"]
-tvmao.com##[ad],[class$="_ad"]
-xmfish.com##.bobing-theme,.adv-960
-zhihu.com##.Card.Banner,.adsbygoogle,.Banner-link
-znjj.tv##.adver1,[class$="_guanggao"]
+
 !x  -----------------------------------------------------------------------------------------------------------------
-|http://*.com/js/aa.htm
-|http://*.com/ms/c-
-|http://oa-mssp.data.aliyun.com/fetch_creative_ability?mode=
-|http://static.iqiyi.com/js/player_v1/res/20$s@<span class=cd-time>*</span>@<span class=cd-time>0</span>@
-|http://zt2.wa5as4.com/vd1f26/199/
-|https://m.*.com/114.html^|
-||1.qjhm.net/
-||118ex.cn
-||18tzx.com
-||3456porn.com:538/attachment/js/
-||anhuilitian.net
-||aodongjiaosu.com
-||biochempop.com^
-||ccunf.com
-||cdn.bootcss.com/zepto/*/zepto.js
-||clickmon.co.kr/pop/wp_ad
-||diuling.com
-||fbaot.com
-||fenvm.com
-||geren-jianli.com/arttop.js
-||ggx.cmvideo.cn/request/
-||jxcn.cn/assets/js/360ads.js^
-||jyhwt.cn
-||kexigia.com
-||ks67.com
-||kuangtuiguoo18888.com
-||ldb.cc/js/top.js
-||m.biqudao.com/js/wap.js
-||m.tvmao.com/$s@function addAD@function xxx@
-||qiaopiguniang.com
-||sinaimg.cn/large/$domain=taoy66.info
-||ssports.iqiyi.com/play/$s@var adid = "0";@var adid = "-1";@
-||tatahn.com
-||www.id97.com/$s@<script src="https://jc.anhuilitian.net/*.js"></script>@@
-||xlsschina15.net
-||yiybb.com/inc/myidong.js
-||yiybb.com/inc/p-t.js
+
 !x  -----------------------------------------------------------------------------------------------------------------
