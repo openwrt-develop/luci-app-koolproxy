@@ -1,13 +1,49 @@
 !x  -----------------------------------------------------------------------------------------------------------------
 !x  -----[KoolProxy 3.8.4]
 !x  -----Thanks: From lvba Group
-!x  -----Thanks for help: <yiclear> <adbyby>
+!x  -----Thanks for help: <yiclear> <adbyby> <adm>
 !x  -----------------------------------------------------------------------------------------------------------------
+!|https://m.biquke.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/hide.js"></script></head>@
 !|https://pan.baidu.com/feproxy/ad/list?
+|https://bonuscloud.io/$r@https://bonuscloud.io/@https://kprules.b0.upaiyun.com/null/404.html@
+|https://console.bonuscloud.io/$r@/https:\/\/.*\.bonuscloud\.io\/.*/@https://kprules.b0.upaiyun.com/null/404.html@
+||tieba.com/p/$s@<div class="l_post l_post_bright j_l_post clearfix ?????????? "@<div style="display:none"@
+|https://www.ppx26.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/hide.js"></script></head>@
+|http://www.discuz.net/$s@</head>@<script src="http://kprules.b0.upaiyun.com/js/hide.js"></script></head>@
+|http://www.avtbk.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+|https://www.dyfc.net/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+||wmxa.cn/$s@</head>@<script src="http://kprules.b0.upaiyun.com/js/hide.js"></script></head>@
+|http://www.tiexue.net/$s@</head>@<script src="http://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+|https://www.baidu.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/baidu_ad.js"></script></head>@
+|https://m.baidu.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/baidu_ad.js"></script></head>@
 !x  -----------------------------------------------------------------------------------------------------------------
+|https://user.qzone.qq.com##div#QM_Container_100005,DIV#idQbossHotbar,DIV#div_corner_ad_container.gb_ad_tearing_angle,DIV#qbs_tips_div,div.gdtads_box,li[class="f-single f-s-s f-single-biz"],div.icenter-right-mod.icenter-right-ad,div#QM_100005_Body.bd,DIV.fn-feed-mod-bd,DIV.ck-act,.sogo-ad,#top-banner,.f-vqz-ad,.collet_box.fn_paipai
+ifeng.com##[id^="optimusPrimeContentId_"],#optimusPrimeContentId
+||https://youth.cn##div.edu-a_dds,div.hd_banner,div.r_huandeng,div.article_d,div[class^="ad00"],iframe[width="200px"][height="200px"],div[id^="myads"][class^="ad0"],div.ad,div[class^="banner"],DIV#sky.fdiv,DIV#identifier-pannel,DIV#sky.div,DIV.pic_banner,DIV.hd_pic,DIV.cj-ggw,div.download,.header
+||https://youth.cn##.ad_space_left,.ad_space_left_box
 !|https://pan.baidu.com,yun.baidu.com##[id^="share-ad-"],A#share_ad_info_panl,div[id^="cpro_"],img.share-center,.ad-platform-tips,.banner-active
+|https://toutiao.jxnews.com.cn##.adclass,.mediav-newsfeed-listitem-type-1,.mediavfeed-newsitem,#corner-flash,.ads-lbotton
+gocloud.cn##.a_pt,.a_mu
+www.96fei.com##.content-wrapper
 !x  -----------------------------------------------------------------------------------------------------------------
-
+|https://common.jxnews.com.cn/20
+|https://imgcdn.toutiaoyule.com/*/adimg/*
+|http://www.gocloud.cn/bbs/static/image/common/ad.gif
+||https://youth.cn/images/adyun.js
+|https://news.youth.cn/images/youth_sjy_$script
+||https://ifengimg.com/iis/iis_
+||https://ifengimg.com/ifeng/sources/
+||cr-nielsen.com^
+|https://ivy.pconline.com.cn^
+|https://jwz.3conline.com/adpuba/
+|https://m.pconline.com.cn/*_ad.jsp?
+||https://dytt8.net/js$script
+||https://dytt8.net/js1/
+|https://photo.0234408.cn/
+||https://pxyvb.cn^
+|https://m.yoxus.cn
+|http://*/*_*@*.exe
+|http://*/*@*_*.exe
 !x  -----------------------------------------------------------------------------------------------------------------
-
+|https://hao.360.cn###header-patch,#daily-hotwords,#top_activity,#top_hotsite,#activity,#iguess,.mbar-bd,#festival-logoskin,#plane > .plane-hd,.cangbao_redbags,#top-full-column-tips,#plane-ria,.ad-top
 !x  -----------------------------------------------------------------------------------------------------------------
