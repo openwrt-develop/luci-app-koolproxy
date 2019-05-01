@@ -11,12 +11,15 @@ local l=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/rules/koolproxy.txt 
 local q=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/rules/daily.txt | wc -l")
 local h=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/rules/user.txt | wc -l")
 local i=luci.sys.exec("cat /usr/share/koolproxy/dnsmasq.adblock | wc -l")
+
+--[[
 local easylist_rules_local=luci.sys.exec("cat /usr/share/koolproxy/data/rules/easylistchina.txt | sed -n '3p'|awk '{print $3,$4}'")
 local easylist_nu_local=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/rules/easylistchina.txt | wc -l")
 local abx_rules_local=luci.sys.exec("cat /usr/share/koolproxy/data/rules/chengfeng.txt | sed -n '3p'|awk '{print $3,$4}'")
 local abx_nu_local=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/rules/chengfeng.txt | wc -l")
 local fanboy_rules_local=luci.sys.exec("cat /usr/share/koolproxy/data/rules/fanboy.txt | sed -n '4p'|awk '{print $3,$4}'")
 local fanboy_nu_local=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/rules/fanboy.txt | wc -l")
+]]--
 
 if luci.sys.call("pidof koolproxy >/dev/null") == 0 then
 	status = translate("<strong><font color=\"green\">KoolProxy is Running</font></strong>")
