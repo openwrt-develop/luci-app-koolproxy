@@ -12,15 +12,6 @@ local q=luci.sys.exec("grep -v !x /usr/share/koolproxy/data/rules/daily.txt | wc
 local h=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/rules/user.txt | wc -l")
 local i=luci.sys.exec("cat /usr/share/koolproxy/dnsmasq.adblock | wc -l")
 
---[[
-local easylist_rules_local=luci.sys.exec("cat /usr/share/koolproxy/data/rules/easylistchina.txt | sed -n '3p'|awk '{print $3,$4}'")
-local easylist_nu_local=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/rules/easylistchina.txt | wc -l")
-local abx_rules_local=luci.sys.exec("cat /usr/share/koolproxy/data/rules/chengfeng.txt | sed -n '3p'|awk '{print $3,$4}'")
-local abx_nu_local=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/rules/chengfeng.txt | wc -l")
-local fanboy_rules_local=luci.sys.exec("cat /usr/share/koolproxy/data/rules/fanboy.txt | sed -n '4p'|awk '{print $3,$4}'")
-local fanboy_nu_local=luci.sys.exec("grep -v '^!' /usr/share/koolproxy/data/rules/fanboy.txt | wc -l")
-]]--
-
 if luci.sys.call("pidof koolproxy >/dev/null") == 0 then
 	status = translate("<strong><font color=\"green\">KoolProxy is Running</font></strong>")
 else
@@ -66,15 +57,6 @@ e:value("daily.txt", translate("每日规则"))
 e:value("kp.dat", translate("视频规则"))
 e:value("user.txt", translate("自定义规则"))
 
---[[
-e = t:taboption("base", MultiValue, "thirdparty_rules", translate("第三方规则"))
-e.optional = false
-e.rmempty = false
-e:value("easylistchina.txt", translate("ABP规则"))
-e:value("chengfeng.txt", translate("乘风规则"))
-e:value("fanboy.txt", translate("Fanboy规则"))
-]]--
-
 e = t:taboption("base", ListValue, "koolproxy_port", translate("端口控制"))
 e.default = 0
 e.rmempty = false
@@ -115,8 +97,7 @@ e.write = function()
 	luci.sys.call("/usr/share/koolproxy/kpupdate 2>&1 >/dev/null")
 	luci.http.redirect(luci.dispatcher.build_url("admin","services","koolproxy"))
 end
-e.description = translate(string.format("<font color=\"red\"><strong>更新订阅规则与Adblock Plus Host</strong></font><br /><font color=\"green\">静态规则: %s / %s条 视频规则: %s<br />每日规则: %s / %s条 自定义规则: %s条<br />Host: %s条</font><br /><font color=\"blue\">ABP规则: %s / %s条 乘风规则: %s / %s条<br />Fanboy规则: %s / %s条</font>", s, l, u, p, q, h, i, easylist_rules_local, easylist_nu_local, abx_rules_local, abx_nu_local, fanboy_rules_local, fanboy_nu_local))
-
+e.description = translate(string.format("<font color=\"red\"><strong>更新订阅规则与Adblock Plus Host</strong></font><br /><font color=\"green\">静态规则: %s / %s条 视频规则: %s<br />每日规则: %s / %s条 自定义规则: %s条<br />Host: %s条</font><br />", s, l, u, p, q, h, i))
 t:tab("cert",translate("Certificate Management"))
 
 e=t:taboption("cert",DummyValue,"c1status",translate("<div align=\"left\">Certificate Restore</div>"))
