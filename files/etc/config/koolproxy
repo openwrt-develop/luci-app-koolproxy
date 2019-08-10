@@ -6,7 +6,7 @@ config global
 	option koolproxy_acl_default '0'
 	option koolproxy_mode '2'
 	option koolproxy_host '1'
-	option koolproxy_rules 'koolproxy.txt daily.txt kp.dat user.txt'
+	option koolproxy_rules 'kp.dat user.txt'
 	option enabled '0'
 
 config rss_rule
@@ -16,3 +16,9 @@ config rss_rule
 	option load '0'
 	option time '2019-04-28 20:58'
 
+config rss_rule
+	option load '0'
+	option name 'Fanboy'
+	option url 'https://raw.githubusercontent.com/user1121114685/koolproxyR/master/koolproxyR/koolproxyR/data/rules/fanboy-annoyance.txt'
+	option file 'fanboy-annoyance.txt'
+	option time '2019-08-10 08:32'
